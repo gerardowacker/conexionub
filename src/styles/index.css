@@ -1,117 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Questrial&display=swap');
-
-.light {
-    --green: #4fe03e;
-    --blue: #1d6aff;
-    --yellow: #ffeb3b;
-    --red: #ff3d00;
-    --white: #c2e9f4;
-    --black: #000000;
-    --not-so-black: #7c7c7c;
-    --actually-white: white;
-    --key-text: var(--black);
-    --toggle-bg: var(--actually-white);
-}
-
-.dark {
-    --green: #5ffb55;
-    --blue: #4c8dff;
-    --yellow: #fff176;
-    --red: #ff6e40;
-    --white: #9bb0bd;
-    --black: #0f1a20;
-    --not-so-black: #4e5a6c;
-    --actually-white: #070d10;
-    --key-text: var(--white);
-    --toggle-bg: var(--not-so-black);
-}
-
 html, body {
-    font-family: 'Questrial', sans-serif;
-    font-optical-sizing: auto;
-    margin: 0;
-    padding: 0;
-    background: var(--white);
-    color: var(--key-text);
-
-    overflow: hidden;
-    scroll-behavior: smooth;
-    user-select: none;
+  min-height: 100%;
+  height: auto;
+  overflow-y: auto;
 }
-
-a {
-    cursor: pointer;
-    color: unset;
+body { display: block; }
+.ub-landing-header {
+  position: sticky;   
+  top: 0;
 }
-
-a:hover {
-    filter: brightness(1.6);
+.landing {
+  min-height: 100vh;
+  padding-top: calc(var(--header-h, 64px) + 12px); 
 }
-
-.items {
-    height: 100vh;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    scroll-behavior: smooth;
+.container, main, #root {
+  height: auto;
+  overflow: visible;
 }
-
-/* Remove annoying margin in paragraphs */
-.p-no-margin-top {
-    margin-block-start: 0;
-    margin-inline-start: 0;
-}
-
-.p-no-margin-bottom {
-    margin-block-end: 0;
-    margin-inline-end: 0;
-}
-
-.xxl {
-    font-size: calc(6vw + 3vh);
-}
-
-.xl {
-    font-size: calc(3vw + 2vh);
-}
-
-.l {
-    font-size: calc(2vw + 1vh);
-}
-
-.m {
-    font-size: calc(1.5vw + 1vh);
-}
-
-.s {
-    font-size: calc(1vw + 1vh);
-}
-
-.xs {
-    font-size: calc(0.5vw + 1vh);
-}
-
-@media (max-width: 1000px) {
-    .xxl {
-        font-size: calc(9.5vw + 3.5vh);
-    }
-
-    .xl {
-        font-size: calc(5.25vw + 2vh);
-    }
-
-    .l {
-        font-size: calc(2vw + 1.25vh);
-    }
-
-    .m {
-        font-size: calc(1.25vw + 1.25vh);
-    }
-
-    .s {
-        font-size: calc(0.75vw + 1.25vh);
-    }
-
-    .xs {
-        font-size: calc(0.75vw + 1.25vh);
-    }
-}
+.dropdown-menu { position: absolute; }

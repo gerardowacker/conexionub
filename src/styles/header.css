@@ -1,0 +1,133 @@
+:root{
+  --ub-red:#861c24;
+  --text:#ffffff;
+  --muted:#475569;
+  --bg:#f9f3f3;         
+  --bg-darker:#f5edec;  
+  --ring:#6e161d;
+  --radius:16px;
+}
+
+.ub-header {
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.ub-header-bar {
+  position: relative;
+  backdrop-filter: saturate(1.2) blur(6px);
+}
+
+.ub-header.landing .ub-header-bar {
+  background: var(--ub-red);
+  border-bottom: none;
+}
+
+.ub-header.app .ub-header-bar {
+  background: var(--ub-red);
+  border-bottom: none;
+  box-shadow: none;
+}
+
+.ub-header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  justify-content: flex-start;
+}
+
+.ub-left {
+  display: flex;
+  align-items: center;
+  gap: 28px; 
+}
+
+.ub-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+.ub-logo img {
+  height: 32px;
+  width: auto;
+  display: block;
+}
+
+.ub-nav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.ub-nav a {
+  color: var(--bg);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 8px 10px;
+  border-radius: 10px;
+  transition: background-color 0.2s, color 0.2s;
+}
+.ub-nav a:hover {
+  background: var(--ring);
+  color: var(--text);
+}
+.ub-nav a:focus,
+.ub-nav a:active {
+  background: var(--ub-red); 
+  color: var(--text);
+  outline: none;
+}
+
+.ub-breadcrumb-wrap {
+  background: transparent;
+}
+.ub-header.landing .ub-breadcrumb-wrap {
+  background: var(--bg); 
+}
+.ub-breadcrumb {
+  max-width: 1000px; 
+  margin: 10px auto 0;
+  padding: 12px 16px;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  background: #fff;
+  border: 1px solid var(--ring);
+  border-radius: var(--radius);
+}
+.ub-breadcrumb li {
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.ub-breadcrumb li::after {
+  content: "›";
+  opacity: .6;
+  margin-left: 8px;
+}
+.ub-breadcrumb li.current {
+  color: var(--text);
+  font-weight: 600;
+}
+.ub-breadcrumb li.current::after {
+  content: "";
+}
+.ub-breadcrumb a {
+  color: inherit;
+  text-decoration: none;
+}
+.ub-breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+body {
+  background: var(--bg);
+}
+
