@@ -5,17 +5,14 @@
 }
 
 .ub-landing-header {
-  position: fixed;
-  top: 0; left: 0;
   width: 100%;
   z-index: 100;
-  background: var(--bg); 
-  backdrop-filter: blur(6px);
   border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
 .ub-landing-inner {
   max-width: 1200px;
+  font-family: 'Barlow', Arial, sans-serif;   
   margin: 0 auto;
   padding: 12px 20px;
   display: flex;
