@@ -28,13 +28,9 @@ export default function HomeView()
                         backgroundRepeat: "no-repeat"
                     }}>
                         <img src={logo} alt="UB" className="hero-logo"/>
-                        <div className="hero-chip">Universidad de Belgrano</div>
                         <h1 id="hero-title" className="hero-title">
-                            Carreras de Ciencias &amp; Tecnología
+                            Carreras de Ciencias y Tecnologías
                         </h1>
-                        <p className="hero-sub">
-                            Elegí tu camino académico y descubrí los planes de estudio.
-                        </p>
                     </section>
 
                     <section className="catalog" id={'carreras'}>
