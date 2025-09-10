@@ -24,6 +24,16 @@ body {
     display: block;
 }
 
+a {
+    text-decoration: none;
+    color: var(--ub-red);
+    transition: .2s;
+}
+
+a:hover {
+    opacity: .8;
+}
+
 .ub-landing-header {
     position: sticky;
     top: 0;
