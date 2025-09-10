@@ -6,15 +6,14 @@ export default function HeaderLanding() {
     <header className="ub-landing-header">
       <div className="ub-landing-inner">
 
-        {/* Menú principal */}
         <nav className="ub-landing-nav">
-          <a href="/carreras">Carreras</a>
-          <a href="/repositorio">Repositorio</a>
-          <a href="/universidad">Universidad</a>
-          <a href="/tesisytrabajos">Tesis</a>
-          <a href="/contacto">Contacto</a>
+          <a href="/">inicio</a>
+          <a href="/carreras">carreras</a>
+          <a href="/repositorio">repositorio</a>
+          <a href="/universidad">universidad</a>
+          <a href="/tesisytrabajos">tesis</a>
+          <a href="/contacto">contacto</a>
         </nav>
-
       </div>
     </header>
   );
