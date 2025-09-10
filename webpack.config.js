@@ -43,7 +43,7 @@ module.exports = function (_env, argv)
                     ],
                 },
                 {
-                    test: /\.(png|jpg|jpeg|gif)$/i,
+                    test: /\.(png|jpg|jpeg|gif|webp)$/i,
                     use: {
                         loader: "url-loader",
                         options: {
