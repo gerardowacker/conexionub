@@ -2,8 +2,10 @@ import React from "react";
 import Header from "../components/header/header-landing.component";
 import "../styles/home-landing.css";
 import '../styles/index.css'
+import logo from '../assets/LogoBlancoTransparente.webp';
 import imgInf from '../assets/descarga.jpg';
 import imgLic from '../assets/compu.jpg';
+import edificio from '../assets/edificionub.png'
 
 export default function HomeView()
 {
@@ -19,8 +21,13 @@ export default function HomeView()
 
             <main className="landing">
                 <div className="container">
-                    <section className="hero-card" aria-labelledby="hero-title">
-                        <img src="UBLogo.png" alt="UB" className="hero-logo"/>
+                    <section className="hero-card" aria-labelledby="hero-title" style={{
+                        backgroundImage: `url(${edificio})`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                        backgroundRepeat: "no-repeat"
+                    }}>
+                        <img src={logo} alt="UB" className="hero-logo"/>
                         <div className="hero-chip">Universidad de Belgrano</div>
                         <h1 id="hero-title" className="hero-title">
                             Carreras de Ciencias &amp; Tecnología
@@ -30,9 +37,15 @@ export default function HomeView()
                         </p>
                     </section>
 
-                    <section className="catalog">
+                    <section className="catalog" id={'carreras'}>
                         <div className="catalog-head">
-                            <span className="crumb-inline">Inicio &gt; Carreras</span>
+                            <span className="crumb-inline">
+                                <span className={'crumb-item'}>Inicio</span>
+                                <span className={'crumb-item'}><b>&gt;</b></span>
+                                <span className={'crumb-item'}>
+                                    <a href={'#carreras'}>Carreras</a>
+                                </span>
+                            </span>
                         </div>
 
                         <div className={'catalog-content'}>
