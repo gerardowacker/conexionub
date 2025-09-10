@@ -1,13 +1,3 @@
-:root{
-  --ub-red:#861c24;
-  --text:#ffffff;
-  --muted:#475569;
-  --bg:#f9f3f3;         
-  --bg-darker:#f5edec;  
-  --ring:#6e161d;
-  --radius:16px;
-}
-
 .ub-header {
   width: 100%;
   position: sticky;
@@ -126,8 +116,3 @@
 .ub-breadcrumb a:hover {
   text-decoration: underline;
 }
-
-body {
-  background: var(--bg);
-}
-
