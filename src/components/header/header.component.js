@@ -22,7 +22,7 @@ export default class Header extends React.Component
                         </Link>
                         <Link to="/">Inicio</Link>
                         <a href="/#carreras">Carreras</a>
-                        <a href="/repositorio">Repositorio</a>
+                        <Link to="/repositorio">Repositorio</Link>
                         <a href="/universidad">Universidad</a>
                         <a href="/tesisytrabajos">Tesis</a>
                         <a href="/contacto">Contacto</a>
