@@ -7,6 +7,7 @@ import imgInf from '../assets/descarga.jpg';
 import imgLic from '../assets/compu.jpg';
 import edificio from '../assets/edificionub.png'
 import Banner from "../components/banner/banner.component";
+import Container from "../components/container/container.component";
 
 export default function HomeView()
 {
@@ -15,24 +16,14 @@ export default function HomeView()
             <Header landing={true}/>
 
             <main className="landing">
-                <div className="container">
+                <div className="view-container">
                     <Banner>
                         <img src={logo} alt="UB" className="hero-logo"/>
                         <h1 id="hero-title" className="hero-title">
                             Portal de Ciencias y Tecnologías
                         </h1>
                     </Banner>
-                    <section className="catalog" id={'carreras'}>
-                        <div className="catalog-head">
-                            <span className="crumb-inline">
-                                <span className={'crumb-item'}>Inicio</span>
-                                <span className={'crumb-item'}><b>&gt;</b></span>
-                                <span className={'crumb-item'}>
-                                    <a href={'#carreras'}>Carreras</a>
-                                </span>
-                            </span>
-                        </div>
-
+                    <Container id={'carreras'} crumb={['Inicio', <a href={'#carreras'}>Carreras</a>]}>
                         <div className={'catalog-content'}>
                             <div className="cards-2">
                                 <article className="career-card">
@@ -135,8 +126,7 @@ export default function HomeView()
                                 </article>
                             </div>
                         </div>
-                    </section>
-
+                    </Container>
                 </div>
             </main>
         </>

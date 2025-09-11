@@ -2,38 +2,10 @@ body {
     background: linear-gradient(to bottom, #ead7d6, #eddddd 400px);
 }
 
-.landing .container {
+.landing .view-container {
     max-width: 1200px;
     margin: 0 auto 64px;
     padding: 0;
-}
-
-.catalog {
-    margin-top: 22px;
-    background: var(--bg);
-    border-radius: var(--radius);
-    box-shadow: 0 8px 18px rgba(0, 0, 0, .05);
-}
-
-.catalog-head {
-    padding: 20px 30px;
-    background: white;
-    border-radius: var(--radius) var(--radius) 0 0;
-}
-
-.catalog-content {
-    padding: 25px;
-}
-
-.crumb-inline {
-    color: var(--muted);
-    font-size: 1.1rem;
-    font-weight: 500;
-}
-
-.crumb-item {
-    display: inline-block;
-    margin-right: 8px;
 }
 
 .cards-2 {

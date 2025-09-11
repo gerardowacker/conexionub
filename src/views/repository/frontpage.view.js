@@ -10,7 +10,7 @@ export default class FrontpageView extends React.Component
         return <>
             <Header/>
             <main className="landing">
-                <div className="container">
+                <div className="view-container">
                     <Banner>
                         <h1 id="hero-title" className="hero-title">
                             Repositorio
