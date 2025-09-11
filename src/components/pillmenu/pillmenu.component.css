@@ -1,0 +1,32 @@
+.pill-menu {
+    margin: 20px auto;
+    padding: 0 20px;
+    border-radius: 20px;
+    background: white;
+    display: flex;
+    list-style: none;
+    gap: 5px;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, .08);
+}
+
+.pill-menu a:hover {
+    opacity: 1 !important;
+}
+
+.pill-menu .pill-menu-item {
+    color: var(--muted);
+    font-size: 1.1rem;
+    font-weight: 500;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.pill-menu .pill-menu-item:hover {
+    background: linear-gradient(to bottom,rgba(0, 0, 0, 0.04) 50%, rgba(0, 0, 0, 0.08) 100%);
+}
+
+.pill-menu .pill-selected {
+    background: linear-gradient(to bottom,rgba(0, 0, 0, 0.06) 50%, rgba(0, 0, 0, 0.12) 100%);
+}
