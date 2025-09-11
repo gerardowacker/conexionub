@@ -22,7 +22,7 @@ export default function HomeView()
             <main className="landing">
                 <div className="container">
                     <section className="hero-card" aria-labelledby="hero-title" style={{
-                        backgroundImage: `url(${edificio})`,
+                        backgroundImage: `linear-gradient(rgba(0,0,0,0.50), rgba(0,0,0,0.50)),url(${edificio})`,
                         backgroundSize: "cover",
                         backgroundPosition: "center",
                         backgroundRepeat: "no-repeat"
