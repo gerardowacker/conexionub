@@ -21,7 +21,7 @@ export default class Header extends React.Component
                             <img className={'header-logo'} src={logo} alt={'Logo de la Universidad de Belgrano'}/>
                         </Link>
                         <Link to="/">Inicio</Link>
-                        <a href="/carreras">Carreras</a>
+                        <a href="/#carreras">Carreras</a>
                         <a href="/repositorio">Repositorio</a>
                         <a href="/universidad">Universidad</a>
                         <a href="/tesisytrabajos">Tesis</a>
