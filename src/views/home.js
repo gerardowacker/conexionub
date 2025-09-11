@@ -1,38 +1,27 @@
 import React from "react";
-import Header from "../components/header/header-landing.component";
+import Header from "../components/header/header.component";
 import "../styles/home-landing.css";
 import '../styles/index.css'
 import logo from '../assets/LogoBlancoTransparente.webp';
 import imgInf from '../assets/descarga.jpg';
 import imgLic from '../assets/compu.jpg';
 import edificio from '../assets/edificionub.png'
+import Banner from "../components/banner/banner.component";
 
 export default function HomeView()
 {
     return (
         <>
-            <Header
-                variant="landing"
-                breadcrumb={[
-                    {label: "Inicio", href: "/"},
-                    {label: "Carreras", href: "/carreras"},
-                ]}
-            />
+            <Header landing={true}/>
 
             <main className="landing">
                 <div className="container">
-                    <section className="hero-card" aria-labelledby="hero-title" style={{
-                        backgroundImage: `linear-gradient(rgba(0,0,0,0.50), rgba(0,0,0,0.50)),url(${edificio})`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                        backgroundRepeat: "no-repeat"
-                    }}>
+                    <Banner>
                         <img src={logo} alt="UB" className="hero-logo"/>
                         <h1 id="hero-title" className="hero-title">
-                            Carreras de Ciencias y Tecnologías
+                            Portal de Ciencias y Tecnologías
                         </h1>
-                    </section>
-
+                    </Banner>
                     <section className="catalog" id={'carreras'}>
                         <div className="catalog-head">
                             <span className="crumb-inline">
