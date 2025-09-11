@@ -34,11 +34,6 @@ a:hover {
     opacity: .8;
 }
 
-.ub-landing-header {
-    position: sticky;
-    top: 0;
-}
-
 .container, main, #root {
     height: auto;
     overflow: visible;
