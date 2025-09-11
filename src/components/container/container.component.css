@@ -1,5 +1,4 @@
 .container {
-    margin-top: 22px;
     background: var(--bg);
     border-radius: var(--radius);
     box-shadow: 0 8px 18px rgba(0, 0, 0, .05);
