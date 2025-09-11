@@ -8,11 +8,16 @@ import Home from "./views/home";
 import {SessionProvider} from "./components/session.context";
 import ResourceView from "./views/resource.view";
 import LoginView from "./views/login.view";
+import FrontpageView from "./views/repository/frontpage.view";
 
 export const WebRoutes = [
     {
         path: "/",
         component: <Home/>
+    },
+    {
+        path: "/repositorio",
+        component: <FrontpageView/>
     },
     {
         path: "/resource/:id",
