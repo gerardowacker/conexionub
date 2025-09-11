@@ -24,7 +24,6 @@ export default function HomeView()
                         </h1>
                     </Banner>
                     <Container id={'carreras'} crumb={['Inicio', <a href={'#carreras'}>Carreras</a>]}>
-                        <div className={'catalog-content'}>
                             <div className="cards-2">
                                 <article className="career-card">
                                     <div className="thumb"
@@ -125,7 +124,6 @@ export default function HomeView()
                                     <a className="btn" href="/carreras/tec-dis">Ver más</a>
                                 </article>
                             </div>
-                        </div>
                     </Container>
                 </div>
             </main>
