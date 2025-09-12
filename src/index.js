@@ -9,7 +9,7 @@ import {SessionProvider} from "./components/session.context";
 import ResourceView from "./views/resource.view";
 import LoginView from "./views/login.view";
 import FrontpageView from "./views/repository/frontpage.view";
-import InformaticaPage from "./views/informaticaPage";
+import DegreePage from "./views/degreePage";
 
 export const WebRoutes = [
     {
@@ -22,7 +22,7 @@ export const WebRoutes = [
     },
     {
         path: "/carreras/ingenieria-informatica",
-        component: <InformaticaPage/>
+        component: <DegreePage/>
     }, 
     {
         path: "/resource/:id",

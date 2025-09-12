@@ -3,9 +3,9 @@ import Header from "../components/header/header.component";
 import Banner from "../components/banner/banner.component";
 import Container from "../components/container/container.component";
 
-import "../styles/informaticaPage.css";
+import "../styles/degreePage.css";
 
-export default function InformaticaPage() {
+export default function degreePage() {
   return (
     <>
       <Header />
