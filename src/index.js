@@ -9,6 +9,7 @@ import {SessionProvider} from "./components/session.context";
 import ResourceView from "./views/resource.view";
 import LoginView from "./views/login.view";
 import FrontpageView from "./views/repository/frontpage.view";
+import InformaticaPage from "./views/informaticaPage";
 
 export const WebRoutes = [
     {
@@ -19,6 +20,10 @@ export const WebRoutes = [
         path: "/repositorio",
         component: <FrontpageView/>
     },
+    {
+        path: "/carreras/ingenieria-informatica",
+        component: <InformaticaPage/>
+    }, 
     {
         path: "/resource/:id",
         component: <ResourceView/>,
@@ -36,7 +41,7 @@ export const WebRoutes = [
 
 const AppRoutes = () => <RouterProvider>
     {WebRoutes.map((route, k) => <Route key={k} status={route.status ? route.status : 200}
-                                        path={route.path}>{route.component}</Route>)}
+                                        path={route.path}>{route.component}</Route>)}                               
 </RouterProvider>
 
 ReactDOM.render(
