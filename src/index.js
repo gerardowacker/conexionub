@@ -10,6 +10,7 @@ import ResourceView from "./views/resource.view";
 import LoginView from "./views/login.view";
 import FrontpageView from "./views/repository/frontpage.view";
 import DegreePage from "./views/degreePage";
+import ContactPage from "./views/contactPage";
 
 export const WebRoutes = [
     {
@@ -24,6 +25,10 @@ export const WebRoutes = [
         path: "/carreras/ingenieria-informatica",
         component: <DegreePage/>
     }, 
+    {
+        path: "/contacto",
+        component: <ContactPage/>
+    },
     {
         path: "/resource/:id",
         component: <ResourceView/>,
