@@ -30,7 +30,6 @@ class DegreePage extends Component
             const degreeModule = require(`./${id}/index.js`);
             const content = degreeModule.source.es;
 
-            // Extraer encabezados
             const headingRegex = /^(#{1,6})\s+(.*)$/gm;
             const headings = [];
             let match;
@@ -50,7 +49,6 @@ class DegreePage extends Component
         }
     }
 
-    // Renderer de headings con ID
     renderHeading = ({level, children}) =>
     {
         const text = children[0];
@@ -91,7 +89,6 @@ class DegreePage extends Component
                         </Banner>
 
                         <div className="degree-layout">
-                            {/* Índice */}
                             <nav className="toc" aria-label="Índice de contenidos">
                                 <div className="toc-title">Contenidos</div>
                                 <ul>
@@ -107,13 +104,12 @@ class DegreePage extends Component
                                 </ul>
                             </nav>
 
-                            {/* Contenedor principal */}
                             <Container
                                 id={`${degree.id}-content`}
                                 crumb={[
                                     "Inicio",
-                                    <a href="/#carreras">Carreras</a>,
-                                    <a key={degree.id} href={`/carreras/${degree.id}`}>
+                                    <a key={'carreras'} href="/#carreras">Carreras</a>,
+                                    <a key={degree.id} href={`#${degree.id}-content`}>
                                         {degree.name.es}
                                     </a>
                                 ]}
