@@ -17,6 +17,7 @@ html, body {
     user-select: none;
     min-height: 100%;
     height: auto;
+    scroll-behavior: smooth;
     overflow-y: auto;
 }
 
