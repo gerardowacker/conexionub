@@ -41,3 +41,14 @@ a:hover {
 .dropdown-menu {
     position: absolute;
 }
+
+body {
+    background: linear-gradient(to bottom, #ead7d6, #eddddd 400px);
+}
+
+.landing .view-container {
+    max-width: 1200px;
+    margin: 0 auto 64px;
+    padding: 0;
+}
+
