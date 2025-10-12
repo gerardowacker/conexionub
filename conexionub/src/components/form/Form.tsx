@@ -12,20 +12,20 @@ export default function ContactForm() {
     }, []);
 
     return (
-        <form className={styles.contactForm} method="POST" action="/api/contact">
+        <form className={styles['contact-form']} method="POST" action="/api/contact">
             <h2>Contactate con la facultad</h2>
-            <div className={styles.formRow}>
+            <div className={styles['form-row']}>
                 <input type="text" name="name" placeholder="Nombre" required/>
                 <input type="email" name="email" placeholder="Email" required/>
             </div>
             <textarea name="message" placeholder="Mensaje" required></textarea>
 
             <div
-                className={styles.cfTurnstile}
+                className={styles['cf-turnstile']}
                 data-sitekey="0x4AAAAAAB1cHRmrUMRPsNoT"
             ></div>
 
-            <button type="submit" className={styles.btnSubmit}>Enviar</button>
+            <button type="submit" className={styles['btn-submit']}>Enviar</button>
         </form>
     );
 }

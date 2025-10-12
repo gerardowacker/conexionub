@@ -6,12 +6,12 @@ import Image from "next/image";
 export default function Header() {
 
     return (
-        <header className={styles.ubLandingHeader}>
-            <div className={styles.ubLandingInner}>
+        <header className={styles['ub-landing-header']}>
+            <div className={styles['ub-landing-inner']}>
 
-                <nav className={styles.ubLandingNav}>
+                <nav className={styles['ub-landing-nav']}>
                     <Link href={"/"} style={{display: 'flex'}}>
-                        <Image className={styles.headerLogo} src={'/logo.png'}
+                        <Image className={styles['header-logo']} src={'/UBLogo.png'} height={40} width={50}
                                alt={'Logo de la Universidad de Belgrano'} priority/>
                     </Link>
                     <Link href="/">Inicio</Link>

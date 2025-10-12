@@ -9,9 +9,9 @@ type PillMenuItem = {
 }
 
 export default function PillMenu({items}: { items: PillMenuItem[] }) {
-    return <ul className={styles.pillMenu}>
+    return <ul className={styles['pill-menu']}>
         {items.map((item, key) => (
-            <Link className={styles.pillMenuItem + (item.selected ? styles.pillSelected : '')}
+            <Link className={styles['pill-menu-item'] + (item.selected ? ' ' + styles['pill-selected'] : '')}
                   href={'repositorio' + (item.route !== '' ? '/' + item.route : '')}>
                 <li key={key}>{item.name}</li>
             </Link>
