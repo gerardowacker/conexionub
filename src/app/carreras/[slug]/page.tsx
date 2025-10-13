@@ -19,10 +19,10 @@ export async function generateStaticParams() {
     }))
 }
 
-export default async function DegreePage({params}: { params: { id: string } }) {
-    const {id} = params
+export default async function DegreePage({params}: { params: { slug: string } }) {
+    const {slug} = await params
 
-    let degree = getDegrees().find((degree) => degree.slug === id)
+    let degree = getDegrees().find((degree) => degree.slug === slug)
 
     if (!degree) {
         notFound()
