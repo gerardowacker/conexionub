@@ -1,0 +1,54 @@
+import Banner from "@/components/banner/Banner";
+import Container from "@/components/container/Container";
+import {getDegrees} from "@/app/carreras/utils";
+import {notFound} from "next/navigation";
+import {CustomMDX, getHeadingsFromMDX} from "@/components/mdx/Mdx";
+import React from "react";
+
+import styles from './page.module.css'
+import bannerStyles from "@/components/banner/Banner.module.css";
+import Toc from "@/components/toc/Toc";
+import MetadataTags from "@/components/MetadataTags";
+import Link from "next/link";
+
+export async function generateStaticParams() {
+    let degrees = getDegrees()
+
+    return degrees.map((degree) => ({
+        slug: degree.slug,
+    }))
+}
+
+export default async function DegreePage({params}: { params: { slug: string } }) {
+    const {slug} = await params
+
+    let degree = getDegrees().find((degree) => degree.slug === slug)
+
+    if (!degree) {
+        notFound()
+    }
+
+    let headings = getHeadingsFromMDX(degree.content)
+
+    return (
+        <>
+            <MetadataTags meta={degree.metadata}/>
+            <Banner>
+                <h1 id="hero-title" className={bannerStyles["hero-title"]}>{degree.metadata.title}</h1>
+                <h3 className={bannerStyles["hero-sub"]}>{degree.metadata.description}</h3>
+            </Banner>
+            <div className={styles['degree-layout']}>
+               <Toc headings={headings}/>
+                <Container
+                    id="informaticacontent"
+                    crumb={["Inicio",
+                        <Link href={'/#carreras'}>Carreras</Link>,
+                        <Link key="Ingeniería en Informática" href={"/carreras/" + degree.slug}>{degree.metadata.title}</Link>
+                    ]}>
+                    <CustomMDX source={degree.content}/>
+                </Container>
+            </div>
+        </>
+    )
+        ;
+}

@@ -1,0 +1,54 @@
+:root {
+    --ub-red: #861c24;
+    --text: #ffffff;
+    --muted: #475569;
+    --bg: #f3ecec;
+    --bg-darker: #ead7d6;
+    --ring: #6e161d;
+    --radius: 16px;
+}
+
+html, body {
+    padding: 0;
+    margin: 0;
+    font-family: 'Barlow', Arial, sans-serif;
+    user-select: none;
+    min-height: 100%;
+    height: auto;
+    scroll-behavior: smooth;
+    overflow-y: auto;
+}
+
+body {
+    display: block;
+}
+
+a {
+    text-decoration: none;
+    color: var(--ub-red);
+    transition: .2s;
+}
+
+a:hover {
+    opacity: .8;
+}
+
+.container, main, #root {
+    height: auto;
+    overflow: visible;
+}
+
+.dropdown-menu {
+    position: absolute;
+}
+
+body {
+    background: linear-gradient(to bottom, #ead7d6, #eddddd 400px);
+}
+
+.landing .view-container {
+    max-width: 1200px;
+    margin: 0 auto 64px;
+    padding: 0;
+}
+

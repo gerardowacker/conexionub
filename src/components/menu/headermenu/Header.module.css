@@ -1,0 +1,78 @@
+.ub-landing-header {
+    width: 100%;
+    margin: 0 auto;
+}
+
+.ub-landing-inner {
+    max-width: 1200px;
+    font-family: 'Barlow', Arial, sans-serif;
+    margin: 0 auto;
+    display: flex;
+}
+
+.ub-landing-nav {
+    padding: 30px 30px 30px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.leftLinks {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    flex: 1;
+}
+
+.rightLinks {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-left: auto;
+}
+
+.ub-landing-nav .header-logo {
+    height: 40px;
+    padding-right: 10px;
+}
+
+.ub-landing-nav a {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    color: var(--ub-red);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1.2rem;
+    transition: .2s;
+}
+
+.ub-landing-nav a:hover {
+    opacity: .5;
+    cursor: pointer;
+}
+
+.ub-landing-actions .login-btn {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 20px;
+    transition: .2s, border-color .2s;
+}
+
+.ub-landing-actions .login-btn:hover {
+    background: #fff;
+    color: var(--ub-red-dark);
+    border-color: #fff;
+}
+
+.separator {
+  display: inline-block;
+  width: 1px;
+  height: 24px;
+  background: #ccc;
+  margin: 0 12px;
+  vertical-align: middle;
+}
