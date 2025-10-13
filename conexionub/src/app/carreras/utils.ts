@@ -6,7 +6,8 @@ type Metadata = {
     title: string,
     description: string,
     years: string,
-    image?: string,
+    image: string,
+    tags: string,
 }
 
 function getMDXFiles(dir: fs.PathLike) {
@@ -19,10 +20,8 @@ function readMDXFile(filePath: fs.PathOrFileDescriptor) {
 }
 
 function parseFrontmatter(fileContent: string) {
-    console.log(fileContent)
     let frontmatterRegex = /---\s*([\s\S]*?)\s*---/
     let match = frontmatterRegex.exec(fileContent)
-    console.log(match)
     let frontMatterBlock = match![1]
     let content = fileContent.replace(frontmatterRegex, '').trim()
     let frontMatterLines = frontMatterBlock.trim().split('\n')
