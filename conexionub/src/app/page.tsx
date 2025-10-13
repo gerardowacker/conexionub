@@ -5,6 +5,7 @@ import Container from "@/components/container/Container";
 
 import styles from './page.module.css'
 import {getDegrees} from "@/app/carreras/utils";
+import Link from "next/link";
 
 export default function Home() {
     return (
@@ -15,7 +16,7 @@ export default function Home() {
                     Portal de Ciencias y Tecnologías
                 </h1>
             </Banner>
-            <Container id={'carreras'} crumb={['Inicio', <a href={'#carreras'}>Carreras</a>]}>
+            <Container id={'carreras'} crumb={['Inicio', <Link href={'/#carreras'}>Carreras</Link>]}>
                 <div className={styles['cards-2']}>
                     {getDegrees().map((degree, key) => (
                         <CareerCard key={key} title={degree.metadata.title} years={degree.metadata.years + " años"}

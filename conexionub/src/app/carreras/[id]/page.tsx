@@ -9,6 +9,7 @@ import styles from './page.module.css'
 import bannerStyles from "@/components/banner/Banner.module.css";
 import Toc from "@/components/toc/Toc";
 import MetadataTags from "@/components/MetadataTags";
+import Link from "next/link";
 
 export async function generateStaticParams() {
     let degrees = getDegrees()
@@ -41,8 +42,8 @@ export default async function DegreePage({params}: { params: { id: string } }) {
                 <Container
                     id="informaticacontent"
                     crumb={["Inicio",
-                        "Carreras",
-                        <a key="Ingeniería en Informática" href={"/carreras/" + degree.slug}>{degree.metadata.title}</a>
+                        <Link href={'/#carreras'}>Carreras</Link>,
+                        <Link key="Ingeniería en Informática" href={"/carreras/" + degree.slug}>{degree.metadata.title}</Link>
                     ]}>
                     <CustomMDX source={degree.content}/>
                 </Container>
