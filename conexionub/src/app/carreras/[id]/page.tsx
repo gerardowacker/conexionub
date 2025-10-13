@@ -8,6 +8,7 @@ import React from "react";
 import styles from './page.module.css'
 import bannerStyles from "@/components/banner/Banner.module.css";
 import Toc from "@/components/toc/Toc";
+import MetadataTags from "@/components/MetadataTags";
 
 export async function generateStaticParams() {
     let degrees = getDegrees()
@@ -30,6 +31,7 @@ export default async function DegreePage({params}: { params: { id: string } }) {
 
     return (
         <>
+            <MetadataTags meta={degree.metadata}/>
             <Banner>
                 <h1 id="hero-title" className={bannerStyles["hero-title"]}>{degree.metadata.title}</h1>
                 <h3 className={bannerStyles["hero-sub"]}>{degree.metadata.description}</h3>
@@ -40,7 +42,7 @@ export default async function DegreePage({params}: { params: { id: string } }) {
                     id="informaticacontent"
                     crumb={["Inicio",
                         "Carreras",
-                        <a key="Ingeniería en Informática" href="/carreras/ingenieria-informatica">Ingeniería en Informática</a>
+                        <a key="Ingeniería en Informática" href={"/carreras/" + degree.slug}>{degree.metadata.title}</a>
                     ]}>
                     <CustomMDX source={degree.content}/>
                 </Container>
