@@ -1,4 +1,4 @@
-export default async function getBaseUrl() {
+export async function getBaseUrl() {
     const vercelUrl = process.env.VERCEL_URL;
     const env = process.env.VERCEL_ENV;
 
