@@ -12,7 +12,7 @@ import MetadataTags from "@/components/MetadataTags";
 import Link from "next/link";
 
 export async function generateStaticParams() {
-    let degrees = getDegrees()
+    const degrees = getDegrees()
 
     return degrees.map((degree) => ({
         slug: degree.slug,
@@ -22,13 +22,13 @@ export async function generateStaticParams() {
 export default async function DegreePage({params}: { params: { slug: string } }) {
     const {slug} = await params
 
-    let degree = getDegrees().find((degree) => degree.slug === slug)
+    const degree = getDegrees().find((degree) => degree.slug === slug)
 
     if (!degree) {
         notFound()
     }
 
-    let headings = getHeadingsFromMDX(degree.content)
+    const headings = getHeadingsFromMDX(degree.content)
 
     return (
         <>
@@ -42,7 +42,7 @@ export default async function DegreePage({params}: { params: { slug: string } })
                 <Container
                     id="informaticacontent"
                     crumb={["Inicio",
-                        <Link href={'/#carreras'}>Carreras</Link>,
+                        <Link key={'Carreras'} href={'/#carreras'}>Carreras</Link>,
                         <Link key="Ingeniería en Informática" href={"/carreras/" + degree.slug}>{degree.metadata.title}</Link>
                     ]}>
                     <CustomMDX source={degree.content}/>
