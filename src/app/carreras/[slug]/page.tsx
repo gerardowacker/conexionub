@@ -10,6 +10,7 @@ import bannerStyles from "@/components/banner/Banner.module.css";
 import Toc from "@/components/toc/Toc";
 import MetadataTags from "@/components/MetadataTags";
 import Link from "next/link";
+import getBaseUrl from "@/app/sitemap";
 
 export async function generateStaticParams() {
     const degrees = getDegrees()
@@ -17,6 +18,44 @@ export async function generateStaticParams() {
     return degrees.map((degree) => ({
         slug: degree.slug,
     }))
+}
+
+export function generateMetadata({ params } : { params: { slug: string } }) {
+    const degree = getDegrees().find((post) => post.slug === params.slug)
+    if (!degree) {
+        return
+    }
+
+    const {
+        title,
+        image,
+        description
+    } = degree.metadata
+    const ogImage = image
+        ? image
+        : `${getBaseUrl()}/og?title=${encodeURIComponent(title)}`
+
+    return {
+        title,
+        description,
+        openGraph: {
+            title,
+            description,
+            type: 'article',
+            url: `${getBaseUrl()}/blog/${degree.slug}`,
+            images: [
+                {
+                    url: ogImage,
+                },
+            ],
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title,
+            description,
+            images: [ogImage],
+        },
+    }
 }
 
 export default async function DegreePage({params}: { params: { slug: string } }) {
