@@ -18,7 +18,7 @@ export default function Contacto() {
 
             <Container
                 id="contacto-form"
-                crumb={["Contacto", <Link id="formulario" href="#formulario">Formulario</Link>]}
+                crumb={["Contacto", <Link key={'Formulario'} id="formulario" href="#formulario">Formulario</Link>]}
             >
                 <div className={styles["contact-grid"]}>
                     <div className={styles["contact-grid__form"]}>
@@ -47,7 +47,7 @@ export default function Contacto() {
                 id="contacto-ubicacion"
                 crumb={[
                     "Contacto",
-                    <Link id="ubicacion" href="#ubicacion">Ubicación</Link>,
+                    <Link key={'Ubicación'} id="ubicacion" href="#ubicacion">Ubicación</Link>,
                 ]}
             >
                 <MapSection/>
