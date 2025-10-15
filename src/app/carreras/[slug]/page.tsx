@@ -10,7 +10,7 @@ import bannerStyles from "@/components/banner/Banner.module.css";
 import Toc from "@/components/toc/Toc";
 import MetadataTags from "@/components/MetadataTags";
 import Link from "next/link";
-import getBaseUrl from "@/app/vercel";
+import {getBaseUrl} from "@/app/vercel";
 
 export async function generateStaticParams() {
     const degrees = getDegrees()
