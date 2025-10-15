@@ -20,8 +20,8 @@ export async function generateStaticParams() {
     }))
 }
 
-export function generateMetadata({ params } : { params: { slug: string } }) {
-    const degree = getDegrees().find((post) => post.slug === params.slug)
+export function generateMetadata({params}: { params: { slug: string } }) {
+    const degree = getDegrees().find((degree) => degree.slug === params.slug)
     if (!degree) {
         return
     }
@@ -42,7 +42,7 @@ export function generateMetadata({ params } : { params: { slug: string } }) {
             title,
             description,
             type: 'article',
-            url: `${getBaseUrl()}/blog/${degree.slug}`,
+            url: `${getBaseUrl()}/carreras/${degree.slug}`,
             images: [
                 {
                     url: ogImage,
@@ -77,12 +77,13 @@ export default async function DegreePage({params}: { params: { slug: string } })
                 <h3 className={bannerStyles["hero-sub"]}>{degree.metadata.description}</h3>
             </Banner>
             <div className={styles['degree-layout']}>
-               <Toc headings={headings}/>
+                <Toc headings={headings}/>
                 <Container
                     id="informaticacontent"
                     crumb={["Inicio",
                         <Link key={'Carreras'} href={'/#carreras'}>Carreras</Link>,
-                        <Link key="Ingeniería en Informática" href={"/carreras/" + degree.slug}>{degree.metadata.title}</Link>
+                        <Link key="Ingeniería en Informática"
+                              href={"/carreras/" + degree.slug}>{degree.metadata.title}</Link>
                     ]}>
                     <CustomMDX source={degree.content}/>
                 </Container>
