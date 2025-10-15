@@ -12,7 +12,7 @@ export default function Home() {
     return (
         <>
             <Banner>
-                <Image src={'/LogoBlancoTransparente.webp'} alt="UB" className={styles['hero-logo']}/>
+                <Image src={'/LogoBlancoTransparente.webp'} alt="UB" className={styles['hero-logo']} width={250} height={200}/>
                 <h1 id="hero-title" className={styles['hero-title']}>
                     Portal de Ciencias y Tecnologías
                 </h1>
