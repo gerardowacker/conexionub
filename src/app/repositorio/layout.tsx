@@ -3,10 +3,11 @@ import Banner from "@/components/banner/Banner";
 import PillMenu from "@/components/menu/pillmenu/PillMenu";
 
 import bannerStyles from "@/components/banner/Banner.module.css";
+import {SessionProvider} from "@/context/SessionContext";
 
 export default function RepoLayout({children}: { children: React.ReactNode }) {
     return (
-        <>
+        <SessionProvider>
             <Banner>
                 <h1 id="hero-title" className={bannerStyles["hero-title"]}>
                     Repositorio
@@ -30,6 +31,6 @@ export default function RepoLayout({children}: { children: React.ReactNode }) {
                 }
             ]}/>
             {children}
-        </>
+        </SessionProvider>
     )
 }
