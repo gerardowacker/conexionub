@@ -19,7 +19,6 @@ export default function RepoLayout({children}: { children: React.ReactNode }) {
                 {
                     name: 'Inicio',
                     route: '',
-                    selected: true
                 },
                 {
                     name: 'Colecciones',
