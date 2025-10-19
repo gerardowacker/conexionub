@@ -1,5 +1,3 @@
-'use client'
-
 import axios, {AxiosError, AxiosResponse} from 'axios'
 
 const host = process.env.NEXT_PUBLIC_LORE_HOST
