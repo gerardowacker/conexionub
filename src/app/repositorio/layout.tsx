@@ -30,10 +30,6 @@ export default function RepoLayout({children}: { children: React.ReactNode }) {
                 {
                     name: 'Recursos',
                     route: 'recursos'
-                },
-                {
-                    name: 'Buscar',
-                    route: 'buscar'
                 }
             ]}/>
             <div style={{display: 'flex', alignItems: 'flex-start'}}>
