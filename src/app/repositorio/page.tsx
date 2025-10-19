@@ -1,75 +1,67 @@
 import React from "react";
 import Container from "@/components/container/Container";
 import Link from "next/link";
-
+import { get } from "@/utils/request";
 import styles from './page.module.css'
 
-export default function Repositorio() {
+type Resource = {
+    _id: string;
+    dc: {
+        title: [{ language: string, title: string }],
+        creator: string,
+        type: string,
+        contributor?: { author?: string[], advisor?: string[] },
+        date: { available: Date, issued: Date },
+        description?: [{ language: string, abstract: string }],
+        format: string,
+        subject?: string[],
+        publisher?: string,
+        rights?: string,
+    },
+    access: {
+        collection: string,
+        restriction: number,
+        hash: string,
+        name: string
+    }
+}
+
+export default async function Repositorio() {
+    const request = await get('/resources?pageSize=5')
+    const resources = Array.isArray(request.response.data?.resources) ? request.response.data.resources as Resource[] : [];
+    const hasMore = !!request.response.data?.hasMore;
+
     return (
         <>
-            <Container id={'colecciones'}
-                       crumb={['Repositorio', <Link key={'Colecciones'} href={'#colecciones'}>Colecciones</Link>]}>
-                <h1 className={styles['title']}>Colecciones del repositorio</h1>
-                <ul className={styles['collections']}>
-                    <li><Link href={'/repositorio/coleccion/ejemplo'} className={styles['collection']}>Colección de
-                        ejemplo
-                        1</Link></li>
-                    <li><Link href={'/repositorio/coleccion/ejemplo'} className={styles['collection']}>Colección de
-                        ejemplo
-                        2</Link></li>
-                    <li><Link href={'/repositorio/coleccion/ejemplo'} className={styles['collection']}>Colección de
-                        ejemplo
-                        3</Link></li>
-                    <li><Link href={'/repositorio/coleccion/ejemplo'} className={styles['collection']}>Colección de
-                        ejemplo
-                        4</Link></li>
-                    <li><Link href={'/repositorio/coleccion/ejemplo'} className={styles['collection']}>Colección de
-                        ejemplo
-                        5</Link></li>
-                    <li><Link href={'/repositorio/coleccion/ejemplo'} className={styles['collection']}>Colección de
-                        ejemplo
-                        6</Link></li>
-                </ul>
-            </Container>
-            <div className={styles['container']}/>
             <Container id={'ultimas'} crumb={['Repositorio',
                 <Link key={'Últimas adiciones'} href={'#ultimas'}>Últimas adiciones</Link>]}>
                 <h1 className={styles['title']}>Últimas adiciones</h1>
-                <Link href={'/repositorio/recurso/ejemplo'} className={styles['resource']}>
-                    <h2 className={styles['resource-title']}>Recurso de ejemplo</h2>
-                    <p className={styles['resource-author']}>De Ejemplo, Autor (Universidad de Belgrano - Facultad
-                        de Ejemplo, 2025)</p>
-                    <p className={styles['resource-description']}>Esta es una descripción de ejemplo para un recurso
-                        añadido recientemente al repositorio. Proporciona información sobre el contenido y la
-                        utilidad del recurso.</p>
-                </Link>
-                <Link href={'/repositorio/recurso/ejemplo'} className={styles['resource']}>
-                    <h2 className={styles['resource-title']}>Recurso de ejemplo</h2>
-                    <p className={styles['resource-author']}>De Ejemplo, Autor (Universidad de Belgrano - Facultad
-                        de Ejemplo, 2025)</p>
-                    <p className={styles['resource-description']}>Esta es una descripción de ejemplo para un recurso
-                        añadido recientemente al repositorio. Proporciona información sobre el contenido y la
-                        utilidad del recurso.</p>
-                </Link>
-                <Link href={'/repositorio/recurso/ejemplo'} className={styles['resource']}>
-                    <h2 className={styles['resource-title']}>Recurso de ejemplo</h2>
-                    <p className={styles['resource-author']}>De Ejemplo, Autor (Universidad de Belgrano - Facultad
-                        de Ejemplo, 2025)</p>
-                    <p className={styles['resource-description']}>Esta es una descripción de ejemplo para un recurso
-                        añadido recientemente al repositorio. Proporciona información sobre el contenido y la
-                        utilidad del recurso.</p>
-                </Link>
-                <Link href={'/repositorio/recurso/ejemplo'} className={styles['resource']}>
-                    <h2 className={styles['resource-title']}>Recurso de ejemplo</h2>
-                    <p className={styles['resource-author']}>De Ejemplo, Autor (Universidad de Belgrano - Facultad
-                        de Ejemplo, 2025)</p>
-                    <p className={styles['resource-description']}>Esta es una descripción de ejemplo para un recurso
-                        añadido recientemente al repositorio. Proporciona información sobre el contenido y la
-                        utilidad del recurso.</p>
-                </Link>
-                <Link href={'/repositorio'} className={styles['see-more']}>
-                    Ver más
-                </Link>
+                {resources.length === 0 && <p>No hay recursos disponibles.</p>}
+                {resources.map(resource => {
+                    const titleEs = Array.isArray(resource.dc.title) ? resource.dc.title.find(t => t.language === 'es')?.title : resource.dc.title;
+                    const authors = resource.dc.contributor?.author?.length ? resource.dc.contributor.author.join(', ') : resource.dc.creator;
+                    const issuedDate = resource.dc.date?.issued ? new Date(resource.dc.date.issued) : undefined;
+                    let fecha = '';
+                    if (issuedDate) {
+                        const dia = issuedDate.getDate().toString().padStart(2, '0');
+                        const mes = (issuedDate.getMonth() + 1).toString().padStart(2, '0');
+                        const anio = issuedDate.getFullYear();
+                        fecha = `${dia}/${mes}/${anio}`;
+                    }
+                    const descriptionEs = Array.isArray(resource.dc.description) ? resource.dc.description?.find(d => d.language === 'es')?.abstract : resource.dc.description;
+                    return (
+                        <Link href={`/repositorio/recurso/${resource._id}`} className={styles['resource']} key={resource._id}>
+                            <h2 className={styles['resource-title']}>{titleEs ?? 'Sin título'}</h2>
+                            <p className={styles['resource-author']}>{authors ?? 'Sin autor'}{fecha ? `  (${fecha})` : ''}</p>
+                            <p className={styles['resource-description']}>{descriptionEs ?? 'Sin descripción disponible.'}</p>
+                        </Link>
+                    )
+                })}
+                {hasMore && (
+                    <Link href={'/repositorio'} className={styles['see-more']}>
+                        Ver más
+                    </Link>
+                )}
             </Container>
         </>
     )
