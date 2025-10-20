@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import {Barlow} from "next/font/google";
 import "./globals.css";
 import Header from "@/components/menu/headermenu/Header";
+import Footer from "@/components/footer/Footer";
 
 const barlowSans = Barlow({
     weight: ['400', '500', '600', '700'],
@@ -27,6 +28,7 @@ export default function RootLayout({
                 {children}
             </div>
         </main>
+        <Footer/>
       </body>
     </html>
   );
