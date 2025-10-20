@@ -1,33 +1,28 @@
 import Container from "@/components/container/Container";
 import Link from "next/link";
+import { get } from "@/utils/request";
+
+import CollectionTree from "@/components/collection-tree/CollectionTree";
+
 import styles from './page.module.css';
 
-export default function Collections()
-{
+interface Collection {
+    _id: string;
+    name: string;
+    description?: string;
+    licence?: string;
+    children: Collection[];
+}
+
+export default async function Collections() {
+    const request = await get('/collections');
+    const collections: Collection[] = Array.isArray(request.response.data) ? request.response.data : [];
+
     return (
         <Container id={'colecciones'}
                    crumb={['Repositorio', <Link key={'Colecciones'} href={'#colecciones'}>Colecciones</Link>]}>
             <h1 className={styles['title']}>Colecciones del repositorio</h1>
-            <ul className={styles['collections']}>
-                <li><Link href={'/repositorio/coleccion/ejemplo'} className={styles['collection']}>Colección de
-                    ejemplo
-                    1</Link></li>
-                <li><Link href={'/repositorio/coleccion/ejemplo'} className={styles['collection']}>Colección de
-                    ejemplo
-                    2</Link></li>
-                <li><Link href={'/repositorio/coleccion/ejemplo'} className={styles['collection']}>Colección de
-                    ejemplo
-                    3</Link></li>
-                <li><Link href={'/repositorio/coleccion/ejemplo'} className={styles['collection']}>Colección de
-                    ejemplo
-                    4</Link></li>
-                <li><Link href={'/repositorio/coleccion/ejemplo'} className={styles['collection']}>Colección de
-                    ejemplo
-                    5</Link></li>
-                <li><Link href={'/repositorio/coleccion/ejemplo'} className={styles['collection']}>Colección de
-                    ejemplo
-                    6</Link></li>
-            </ul>
+            <CollectionTree collections={collections} />
         </Container>
     )
 }

@@ -1,13 +1,9 @@
-.title {
-    margin-top: 0;
-}
-
 .collections {
     margin: 0 0;
     background: white;
     border-radius: var(--radius);
     box-shadow: 0 2px 8px rgba(134, 28, 36, 0.08);
-    padding: 1rem;
+    padding: 1.5rem 2rem;
     list-style: none;
 }
 
@@ -54,7 +50,6 @@
     outline: 2px solid var(--ub-red, #861c24);
 }
 
-/* Opcional: para mejorar la indentación visual de los hijos */
 .collections ul {
     margin-left: 1.5rem;
     margin-top: 0.3rem;
