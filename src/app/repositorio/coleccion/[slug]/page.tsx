@@ -82,7 +82,7 @@ export default async function Collection({params, searchParams}: {
 
             <Container id={"subcollections"}
                        crumb={[<Link key={'repositorio'} href={"/repositorio"}>Repositorio</Link>,
-                           <Link key={'sub'} href={'#subcollections'}>Sub-colecciones</Link>]}
+                           <Link key={'col'} href={'#col'}>{tree?.name ?? 'Colección'}</Link>]}
             >
                 <h1 className={styles['collection-box-title']}>{tree?.name ?? 'Colección'}</h1>
                 {tree?.description && <p className={styles['collection-description']}>{tree.description}</p>}
