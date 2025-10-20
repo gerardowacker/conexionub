@@ -23,7 +23,8 @@ export async function getDeploymentInfo() {
     return {
         repoUrl,
         commitAuthor: process.env.VERCEL_GIT_COMMIT_AUTHOR_NAME ?? 'Desconocido',
-        commitId: process.env.VERCEL_GIT_COMMIT_SHA ?? 'N/A',
+        fullCommitId: process.env.VERCEL_GIT_COMMIT_SHA ?? 'N/A',
+        commitId: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) ?? 'N/A',
         environment: process.env.VERCEL_ENV ?? 'development',
     };
 }
