@@ -31,6 +31,16 @@
     color: var(--ub-red, #861c24);
 }
 
+.button {
+    display: inline-block;
+    background: var(--ub-red, #861c24);
+    color: #fff;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 700;
+}
+
 @media (max-width: 900px) {
     .degree-layout {
         grid-template-columns: 1fr;
