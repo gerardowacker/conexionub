@@ -9,7 +9,7 @@ export default function Crumb({items}: { items: React.ReactNode[] }) {
                     if (key !== items.length - 1) return (
                         <div style={{display: 'inherit'}} key={key}>
                             <span className={styles['crumb-item']}>{item}</span>
-                            <span className={styles['crumb-item']}><b>/</b></span>
+                            <span className={styles['crumb-item']}>/</span>
                         </div>
                     )
                     else
