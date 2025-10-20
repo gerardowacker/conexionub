@@ -36,10 +36,10 @@ export function generateMetadata({params}: { params: { slug: string } }) {
         : `${getBaseUrl()}/og?title=${encodeURIComponent(title)}`
 
     return {
-        title,
+        title: title + ' | Universidad de Belgrano - Ciencias y Tecnologías',
         description,
         openGraph: {
-            title,
+            title: title + ' | Universidad de Belgrano - Ciencias y Tecnologías',
             description,
             type: 'article',
             url: `${getBaseUrl()}/carreras/${degree.slug}`,
@@ -51,7 +51,7 @@ export function generateMetadata({params}: { params: { slug: string } }) {
         },
         twitter: {
             card: 'summary_large_image',
-            title,
+            title: title + ' | Universidad de Belgrano - Ciencias y Tecnologías',
             description,
             images: [ogImage],
         },
