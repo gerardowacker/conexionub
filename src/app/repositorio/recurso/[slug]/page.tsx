@@ -4,7 +4,7 @@ import {get} from "@/utils/request";
 import styles from './page.module.css'
 import {notFound} from "next/navigation";
 
-type Resource = {
+type ResourceResponse = {
     dc: {
         title: [{ language: string, title: string }],
         creator: string,
@@ -22,6 +22,13 @@ type Resource = {
         restriction: number,
         hash: string,
         name: string
+    },
+    collectionInfo?: {
+        current: {
+            id: string,
+            name: string,
+        },
+        ancestors: [{ id: string, name: string }]
     }
 }
 
@@ -31,7 +38,7 @@ export default async function Resource({params}: { params: { slug: string } }) {
     const request = await get('/resource/' + slug)
     if (request.response.status !== 200)
         return notFound()
-    const resource = request.response.data as Resource
+    const resource = request.response.data as ResourceResponse
 
     const titleEs = resource.dc.title.find(title => title.language === 'es')?.title
     const descriptionEs = resource.dc.description?.find(d => d.language === 'es')?.abstract
@@ -42,10 +49,17 @@ export default async function Resource({params}: { params: { slug: string } }) {
     const fileName = resource.access?.name ?? 'Ver recurso'
     const collectionId = resource.access?.collection ?? ''
 
+    const collectionName = resource.collectionInfo?.current.name ?? 'Colección desconocida'
+    const collectionCrumbs = resource.collectionInfo?.ancestors.reverse().map(ancestor => (
+        <Link key={ancestor.id} href={'/repositorio/coleccion/' + ancestor.id}>{ancestor.name}</Link>
+    )) ?? []
+
     return (
         <>
-            <Container id={params.slug} crumb={[<Link key={'repositorio'} href={'/repositorio'}>Repositorio</Link>,
-                <Link key={'slug'} href={'#' + params.slug}>{titleEs}</Link>]}>
+            <Container id={params.slug}
+                       crumb={[<Link key={'repositorio'} href={'/repositorio'}>Repositorio</Link>, ...collectionCrumbs,
+                           <Link key={'repo'} href={'/repositorio/coleccion/' + collectionId}>{collectionName}</Link>,
+                           <Link key={'slug'} href={'#' + params.slug}>{titleEs}</Link>]}>
                 <h1 className={styles['title']}>{titleEs}</h1>
                 <div className={styles['resource-grid']}>
                     <aside className={styles['resource-info']}>
@@ -72,9 +86,10 @@ export default async function Resource({params}: { params: { slug: string } }) {
                             <p>{slug}</p>
                         </div>
                         <div>
+                            <p><strong>Colección</strong></p>
                             <Link className={styles['resource-info__button']}
                                   href={'/repositorio/coleccion/' + collectionId}
-                                  rel="noopener noreferrer">Ir a colección</Link>
+                                  rel="noopener noreferrer">{collectionName}</Link>
                         </div>
                     </div>
                 </div>
