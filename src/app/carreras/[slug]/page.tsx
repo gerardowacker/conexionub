@@ -80,12 +80,28 @@ export default async function DegreePage({params}: { params: { slug: string } })
                 <Toc headings={headings}/>
                 <Container
                     id="informaticacontent"
-                    crumb={["Inicio",
+                    crumb={[<Link key={'inicio'} href={'/'}>Inicio</Link>,
                         <Link key={'Carreras'} href={'/#carreras'}>Carreras</Link>,
-                        <Link key="Ingeniería en Informática"
-                              href={"/carreras/" + degree.slug}>{degree.metadata.title}</Link>
+                        <Link key={degree.slug}
+                              href={"/carreras/" + degree.slug}>{degree.metadata.title}</Link>,
+                        'Contenido'
                     ]}>
                     <CustomMDX source={degree.content}/>
+                </Container>
+                <div />
+                <Container id={'contacto'} crumb={[<Link key={'inicio'} href={'/'}>Inicio</Link>,
+                    <Link key={'Carreras'} href={'/#carreras'}>Carreras</Link>,
+                    <Link key="Ingeniería en Informática"
+                          href={"/carreras/" + degree.slug}>{degree.metadata.title}</Link>,
+                    'Inscripción'
+                ]}>
+                    <h2>Requisitos de ingreso</h2>
+                    <ul>
+                        <li>Contar con título secundario.</li>
+                        <li>Concurrir a una Jornada Informativa introductoria de la Universidad.</li>
+                        <li>Asistir a una entrevista de admisión con un directivo de la carrera.</li>
+                    </ul>
+                    <Link className={styles['button']} href={'https://ub.edu.ar/ingreso/ingreso-ub'}>Saber más</Link>
                 </Container>
             </div>
         </>
