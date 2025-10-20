@@ -27,7 +27,7 @@ type Resource = {
 }
 
 export default async function Repositorio() {
-    const request = await get('/resources?pageSize=5')
+    const request = await get('/resources?pageSize=5&desc=true')
     const resources = Array.isArray(request.response.data?.resources) ? request.response.data.resources as Resource[] : [];
     const hasMore = !!request.response.data?.hasMore;
 
