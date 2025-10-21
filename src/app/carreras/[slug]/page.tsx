@@ -20,12 +20,15 @@ export async function generateStaticParams() {
     }))
 }
 
-export function generateMetadata({params}: { params: { slug: string } }) {
-    const { slug } = params;
-    const degree = getDegrees().find((degree) => degree.slug === slug)
-    if (!degree) {
-        return
-    }
+export async function generateMetadata(
+  { params }: { params: Promise<{ slug: string }> }
+) {
+  const { slug } = await params; 
+
+  const degree = getDegrees().find((degree) => degree.slug === slug);
+  if (!degree) {
+    return {};
+  }
 
     const {
         title,
@@ -59,14 +62,14 @@ export function generateMetadata({params}: { params: { slug: string } }) {
     }
 }
 
-export default async function DegreePage({params}: { params: { slug: string } }) {
-    const {slug} = params
+export default async function DegreePage({ params }: { params: Promise<{ slug: string }> }   ) {
+  const { slug } = await params;                       
 
-    const degree = getDegrees().find((degree) => degree.slug === slug)
+  const degree = getDegrees().find((degree) => degree.slug === slug);
 
-    if (!degree) {
-        notFound()
-    }
+  if (!degree) {
+    notFound();
+  }
 
     const headings = getHeadingsFromMDX(degree.content)
 
