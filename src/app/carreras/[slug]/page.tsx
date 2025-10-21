@@ -21,7 +21,8 @@ export async function generateStaticParams() {
 }
 
 export function generateMetadata({params}: { params: { slug: string } }) {
-    const degree = getDegrees().find((degree) => degree.slug === params.slug)
+    const { slug } = params;
+    const degree = getDegrees().find((degree) => degree.slug === slug)
     if (!degree) {
         return
     }
@@ -59,7 +60,7 @@ export function generateMetadata({params}: { params: { slug: string } }) {
 }
 
 export default async function DegreePage({params}: { params: { slug: string } }) {
-    const {slug} = await params
+    const {slug} = params
 
     const degree = getDegrees().find((degree) => degree.slug === slug)
 
