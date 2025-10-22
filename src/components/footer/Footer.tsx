@@ -81,7 +81,7 @@ export default async function Footer() {
                         <h4 className={styles.colTitle}>Contacto</h4>
                         <ul className={styles.list}>
                             <li><Link href="/contacto">Contacto</Link></li>
-                            <li><Link href="/contacto">Ubicación</Link></li>
+                            <li><Link href="/contacto#ubicacion">Ubicación</Link></li>
                         </ul>
                     </div>
 
