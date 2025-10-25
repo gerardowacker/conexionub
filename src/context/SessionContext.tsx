@@ -62,11 +62,25 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         return user;
     };
 
-    const logout = async (single?: boolean) => {
-        const res = await post("/logout", { token, clientToken, single });
-        if (res.response.status !== 200) throw new Error(res.response.data.error);
-        localLogout();
-    };
+    const logout = async (single: boolean = true) => {
+  try {
+    if (!token || !clientToken) {
+      console.warn("Faltan parámetros para logout — se hará logout local.");
+      localLogout();
+      return;
+    }
+    const res = await post("/logout", { token, clientToken, single });
+
+    if (!res?.response || res.response.status !== 200) {
+      const msg = res?.response?.data?.error || "Error desconocido al cerrar sesión.";
+      console.warn("Logout remoto falló:", msg);
+    }
+  } catch (err) {
+    console.error("Error durante logout:", err);
+  } finally {
+    localLogout();
+  }
+};
 
     const localLogout = () => {
         localStorage.removeItem("__lorest");

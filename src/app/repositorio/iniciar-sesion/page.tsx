@@ -1,61 +1,94 @@
 'use client';
 
 import React, { useContext, useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { SessionContext } from '@/context/SessionContext';
+import Container from '@/components/container/Container';
+import styles from './login.module.css';
 
 export default function LoginPage() {
-    const session = useContext(SessionContext);
-    const router = useRouter();
-    const [error, setError] = useState<string | null>(null);
-    const user = session?.user;
-    const login = session?.login;
+  const session = useContext(SessionContext);
+  const router = useRouter();
 
-    useEffect(() => {
-        if (user) router.push('/repositorio');
-    }, [user, router]);
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const user = session?.user;
+  const login = session?.login;
 
-    if (!session) {
-        setError('El contexto de sesión no está disponible.')
-        return;
+  useEffect(() => {
+    if (user) router.push('/repositorio');
+  }, [user, router]);
+
+  const missingContext = !session;
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError(null);
+
+    if (!login) {
+      setError('No se puede iniciar sesión: función de login no disponible.');
+      return;
     }
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        setError(null);
+    const formData = new FormData(e.currentTarget);
+    const email = (formData.get('email') as string)?.trim();
+    const password = (formData.get('password') as string)?.trim();
 
-        const formData = new FormData(e.currentTarget);
-        const email = (formData.get('email') as string)?.trim();
-        const password = (formData.get('password') as string)?.trim();
+    if (!email || !password) {
+      setError('Debes ingresar un correo y una contraseña.');
+      return;
+    }
 
-        if (!email || !password) {
-            setError('Debes ingresar un correo y una contraseña.');
-            return;
-        }
+    try {
+      setSubmitting(true);
+      await login(email, password);
+      router.push('/repositorio');
+    } catch (err) {
+      setSubmitting(false);
+      setError(err instanceof Error ? (err.message || 'Error al iniciar sesión.') : 'Error al iniciar sesión.');
+    }
+  };
 
-        if (!login) {
-            setError('No se puede iniciar sesión: función de login no disponible.');
-            return;
-        }
+  return (
+    <Container id="login" crumb={["Inicio",<Link key="login" href="iniciar-sesion">Iniciar sesión</Link>]}>
+      <div className={styles.card}>
+        <h3 className={styles.heading}>Iniciar sesión</h3>
 
-        try {
-            await login(email, password);
-            router.push('/');
-        } catch (err) {
-            if (err instanceof Error) {
-                setError(err.message || 'Error al iniciar sesión.');
-            } else {
-                setError('Error al iniciar sesión.');
-            }
-        }
-    };
+        {missingContext && <div className={styles.alert}>El contexto de sesión no está disponible.</div>}
 
-    return (
-        <form onSubmit={handleSubmit}>
-            {error && <p className="red">{error}</p>}
-            <input type="email" name="email" placeholder="Correo electrónico" required/>
-            <input type="password" name="password" placeholder="Contraseña" required/>
-            <button type="submit">Iniciar sesión</button>
-        </form>
-    );
+        {!missingContext && (
+          <form onSubmit={handleSubmit} className={styles.form} noValidate>
+            {error && <div className={styles.error}>{error}</div>}
+
+            <label className={styles.label} htmlFor="email">E-mail</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              className={styles.input}
+              placeholder="tucuenta@ub.edu.ar"
+              autoComplete="email"
+              required
+            />
+
+            <label className={styles.label} htmlFor="password">Contraseña</label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              className={styles.input}
+              placeholder="••••••••"
+              autoComplete="current-password"
+              required
+            />
+
+            <button type="submit" className={styles.button} disabled={submitting}>
+              {submitting ? 'Ingresando…' : 'Iniciar sesión'}
+            </button>
+          </form>
+        )}
+      </div>
+    </Container>
+  );
 }
