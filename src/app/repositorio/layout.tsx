@@ -36,17 +36,7 @@ export default function RepoLayout({children}: { children: React.ReactNode }) {
                 <div style={{flex: 1, minWidth: 0}}>
                     {children}
                 </div>
-                <Sidebar>
-                    <div className={sidebarStyles.block}>
-                        <div className={sidebarStyles.title}>Mi cuenta</div>
-                        <div className={sidebarStyles.email}>usuario@ejemplo.com</div>
-                        <div className={sidebarStyles.buttonGroup}>
-                            <button className={sidebarStyles.button}>Perfil</button>
-                            <button className={sidebarStyles.button}>Panel de control</button>
-                            <button className={sidebarStyles.button}>Salir</button>
-                        </div>
-                    </div>
-                </Sidebar>
+                <Sidebar/>
             </div>
         </SessionProvider>
     )

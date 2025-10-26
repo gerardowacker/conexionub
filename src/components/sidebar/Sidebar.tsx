@@ -37,7 +37,7 @@ export default function Sidebar() {
             <Link href="/repositorio/iniciar-sesion" className={styles.button}>
               Iniciar sesión
             </Link>
-            <Link href="/registro" className={styles.button}>
+            <Link href="/repositorio/crear-cuenta" className={styles.button}>
               Crear cuenta
             </Link>
           </div>
