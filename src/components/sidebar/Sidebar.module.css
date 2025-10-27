@@ -1,0 +1,69 @@
+:root {
+  --ub-red: #7a0e12;
+  --ub-red-dark: #5c0a0e;
+  --ub-bg-light: #faf7f7;
+  --ub-bg-hover: #f3eaea;
+}
+
+.sidebar {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.05);
+  padding: 24px 22px;
+  margin-left: 24px;
+  min-width: 250px;
+  max-width: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+  height: fit-content;
+}
+
+.block {
+  width: 100%;
+}
+
+.title {
+  color: var(--ub-red);
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin-bottom: 15px;
+  margin-top: -4px; 
+}
+
+.email {
+  font-size: 0.96rem;
+  color: #555;
+  word-break: break-all;
+  margin-bottom: 1.2rem;
+}
+.buttonGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.button {
+  box-sizing: border-box;  
+  font-family: inherit;
+  background: var(--ub-bg-light);
+  color: var(--ub-red-dark);
+  border: none;
+  text-align: left;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, transform 0.1s;
+  text-decoration: none;
+  width: 100%;
+}
+
+.button:hover {
+  background: var(--ub-bg-hover);
+  color: var(--ub-red);
+  transform: translateY(-1px);
+}
