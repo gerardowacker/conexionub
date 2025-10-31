@@ -20,7 +20,7 @@ export default async function Collections() {
 
     return (
         <Container id={'colecciones'}
-                   crumb={['Repositorio', <Link key={'Colecciones'} href={'#colecciones'}>Colecciones</Link>]}>
+                   crumb={[<Link key={'rep'} href={'/repositorio'}>Repositorio</Link>, <Link key={'Colecciones'} href={'#colecciones'}>Colecciones</Link>]}>
             <h1 className={styles['title']}>Colecciones del repositorio</h1>
             <CollectionTree collections={collections} />
         </Container>
