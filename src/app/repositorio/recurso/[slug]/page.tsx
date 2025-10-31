@@ -57,7 +57,9 @@ export default async function Resource({params}: { params: { slug: string } }) {
     return (
         <>
             <Container id={params.slug}
-                       crumb={[<Link key={'repositorio'} href={'/repositorio'}>Repositorio</Link>, ...collectionCrumbs,
+                       crumb={[<Link key={'repositorio'} href={'/repositorio'}>Repositorio</Link>,
+                           <Link key={'cols'} href={'/repositorio/colecciones'}>Colecciones</Link>,
+                           ...collectionCrumbs,
                            <Link key={'repo'} href={'/repositorio/coleccion/' + collectionId}>{collectionName}</Link>,
                            <Link key={'slug'} href={'#' + params.slug}>{titleEs}</Link>]}>
                 <h1 className={styles['title']}>{titleEs}</h1>
