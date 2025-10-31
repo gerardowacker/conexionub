@@ -1,9 +1,9 @@
 "use client"
 
 import React, {useState} from 'react'
-import Link from 'next/link'
 import styles from './page.module.css'
 import {get} from '@/utils/request'
+import ResourceCard from '@/components/card/ResourceCard'
 
 type Resource = {
     _id: string
@@ -65,19 +65,7 @@ export default function ResourcesList({
         <div>
             {resources.length === 0 && <p>No hay recursos para esta colección.</p>}
             {resources.map(r => (
-                <Link key={r._id} href={`/repositorio/recurso/${r._id}`} className={styles['resource']}>
-                    <h2 className={styles['resource-title']}>{r.title ?? r._id}</h2>
-
-                    {(r.author || r.year) && (
-                        <p className={styles['resource-meta']}>
-                            {r.author && <span className={styles['resource-author']}>{r.author}</span>}
-                            {r.author && r.year && <span style={{margin: '0 0.5rem', color: 'var(--muted)'}}>·</span>}
-                            {r.year && <span className={styles['resource-year']}>{r.year}</span>}
-                        </p>
-                    )}
-
-                    {r.description && <p className={styles['resource-description']}>{r.description}</p>}
-                </Link>
+                <ResourceCard key={r._id} resource={r} />
             ))}
 
             {error && <p style={{color: 'var(--error, #b00020)'}}>{error}</p>}
