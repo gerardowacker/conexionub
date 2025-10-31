@@ -42,7 +42,7 @@ export default async function Authors() {
 
             <div className={styles['list']}>
                 {authors.map((author, i) => (
-                    <Link href={`/recursos?author=${encodeURIComponent(author.name)}`} key={`${author.name}-${i}`}
+                    <Link href={`/repositorio/recursos?author=${encodeURIComponent(author.name)}`} key={`${author.name}-${i}`}
                           className={styles['author-card']}>
                         <h2 className={styles['author-name']}>
                             <span>{author.name}</span>
