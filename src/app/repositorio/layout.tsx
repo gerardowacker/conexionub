@@ -3,7 +3,6 @@ import Banner from "@/components/banner/Banner";
 import PillMenu from "@/components/menu/pillmenu/PillMenu";
 
 import bannerStyles from "@/components/banner/Banner.module.css";
-import sidebarStyles from '@/components/sidebar/Sidebar.module.css';
 import {SessionProvider} from "@/context/SessionContext";
 import Sidebar from "@/components/sidebar/Sidebar";
 
@@ -30,6 +29,10 @@ export default function RepoLayout({children}: { children: React.ReactNode }) {
                 {
                     name: 'Recursos',
                     route: 'recursos'
+                },
+                {
+                    name: 'Autores',
+                    route: 'autores'
                 }
             ]}/>
             <div style={{display: 'flex', alignItems: 'flex-start'}}>
