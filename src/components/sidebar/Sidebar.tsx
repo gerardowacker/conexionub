@@ -23,7 +23,7 @@ export default function Sidebar() {
                 Perfil
               </Link>
               {user.level >= 1 && (
-              <Link href="/panel" className={styles.button}>
+              <Link href="/repositorio/admin" className={styles.button}>
                 Panel de control
               </Link>
               )}
