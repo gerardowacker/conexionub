@@ -1,30 +1,9 @@
 import React from "react";
 import Container from "@/components/container/Container";
 import Link from "next/link";
-import { get } from "@/utils/request";
+import {get} from "@/utils/request";
 import styles from './page.module.css'
-
-type Resource = {
-    _id: string;
-    dc: {
-        title: [{ language: string, title: string }],
-        creator: string,
-        type: string,
-        contributor?: { author?: string[], advisor?: string[] },
-        date: { available: Date, issued: Date },
-        description?: [{ language: string, abstract: string }],
-        format: string,
-        subject?: string[],
-        publisher?: string,
-        rights?: string,
-    },
-    access: {
-        collection: string,
-        restriction: number,
-        hash: string,
-        name: string
-    }
-}
+import {Resource} from '@/types/resources'
 
 export default async function Repositorio() {
     const request = await get('/resources?pageSize=5&desc=true')
@@ -50,7 +29,8 @@ export default async function Repositorio() {
                     }
                     const descriptionEs = Array.isArray(resource.dc.description) ? resource.dc.description?.find(d => d.language === 'es')?.abstract : resource.dc.description;
                     return (
-                        <Link href={`/repositorio/recurso/${resource._id}`} className={styles['resource']} key={resource._id}>
+                        <Link href={`/repositorio/recurso/${resource._id}`} className={styles['resource']}
+                              key={resource._id}>
                             <h2 className={styles['resource-title']}>{titleEs ?? 'Sin título'}</h2>
                             <p className={styles['resource-author']}>{authors ?? 'Sin autor'}{fecha ? `  (${fecha})` : ''}</p>
                             <p className={styles['resource-description']}>{descriptionEs ?? 'Sin descripción disponible.'}</p>

@@ -6,29 +6,6 @@ import {get} from "@/utils/request";
 import styles from '../page.module.css';
 import ResourcesList from './resourcelist';
 
-type Resource = {
-    _id: string;
-    dc: {
-        title: [{ language: string, title: string }],
-        creator: string,
-        type: string,
-        contributor?: { author?: string[], advisor?: string[] },
-        date: { available: Date, issued: Date },
-        description?: [{ language: string, abstract: string }],
-        format: string,
-        subject?: string[],
-        publisher?: string,
-        rights?: string,
-    },
-    access: {
-        collection: string,
-        restriction: number,
-        hash: string,
-        name: string
-    }
-}
-
-
 interface Props {
     searchParams?: { [key: string]: string | string[] | undefined };
 }
@@ -49,21 +26,6 @@ export default async function ResourcesPage({searchParams}: Props) {
     const hasMore: boolean = !!raw.hasMore;
     const lastResource: string | null = raw.lastResource ?? null;
 
-    const initialResources = resourcesRaw.map(r => {
-        const titleEs = r.dc && Array.isArray(r.dc.title) ? r.dc.title.find((t) => t.language === 'es')?.title : r.dc?.title;
-        const authors = r.dc?.contributor?.author?.length ? r.dc.contributor.author.join(', ') : r.dc?.creator;
-        const issuedDate = r.dc?.date?.issued ? new Date(r.dc.date.issued) : undefined;
-        const year = issuedDate ? issuedDate.getFullYear() : undefined;
-        const descriptionEs = r.dc && Array.isArray(r.dc.description) ? r.dc.description?.find((d) => d.language === 'es')?.abstract : r.dc?.description;
-        return {
-            _id: r._id,
-            title: titleEs ?? r._id,
-            author: authors,
-            year,
-            description: descriptionEs ?? undefined,
-        }
-    });
-
     return (
         <Container id={'recursos'} crumb={[<Link key={'Repositorio'} href={'/repositorio'}>Repositorio</Link>,
             <Link key={'Recursos'} href={'/repositorio/recursos'}>Recursos</Link>,
@@ -72,7 +34,7 @@ export default async function ResourcesPage({searchParams}: Props) {
             <h1 className={styles['title']}>{authorName ? `Recursos de ${authorName}` : 'Recursos'}</h1>
 
             <ResourcesList
-                initialResources={initialResources}
+                initialResources={resourcesRaw}
                 initialHasMore={hasMore}
                 initialLastResource={lastResource}
                 authorName={authorName}
@@ -82,4 +44,3 @@ export default async function ResourcesPage({searchParams}: Props) {
         </Container>
     )
 }
-

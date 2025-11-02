@@ -4,13 +4,7 @@ import Link from "next/link";
 import styles from './page.module.css'
 import {get} from '@/utils/request'
 import ResourcesList from './resourcelist'
-
-type Resource = {
-    _id: string
-    title: string
-    author?: string
-    description?: string
-}
+import {Resource} from '@/types/resources'
 
 type CollectionNode = {
     _id: string

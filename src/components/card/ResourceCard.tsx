@@ -3,42 +3,35 @@
 import React from 'react'
 import Link from 'next/link'
 import styles from './ResourceCard.module.css'
-
-type DcResource = {
-    _id: string;
-    dc?: any;
-    title?: string;
-    author?: string;
-    year?: string | number;
-    description?: string;
-}
+import {Resource} from '@/types/resources'
 
 type Props = {
-    resource: DcResource
+    resource: Resource
 }
 
-export default function ResourceCard({ resource }: Props) {
-    // Si viene en formato DC, extraer campos preferentemente en español
-    let id = resource._id
-    let title = resource.title ?? ''
-    let author = resource.author ?? ''
-    let year = resource.year ?? ''
-    let description = resource.description ?? ''
+export default function ResourceCard({resource}: Props) {
+    const id = resource._id
+    const dc = resource.dc
 
-    if (resource.dc) {
-        const dc = resource.dc
-        const titleEs = Array.isArray(dc.title) ? dc.title.find((t: any) => t.language === 'es')?.title : dc.title
-        title = titleEs ?? title ?? id
-        author = dc.contributor?.author?.length ? dc.contributor.author.join(', ') : dc.creator ?? author
-        const issued = dc.date?.issued ? new Date(dc.date.issued) : undefined
-        year = issued ? issued.getFullYear() : year
-        const descEs = Array.isArray(dc.description) ? dc.description.find((d: any) => d.language === 'es')?.abstract : dc.description
-        description = descEs ?? description
+    let title = ''
+    if (Array.isArray(dc.title)) {
+        title = dc.title.find((t) => t.language === 'es')?.title ?? dc.title[0]?.title ?? ''
+    } else if (typeof dc.title === 'string') {
+        title = dc.title
     }
 
-    // Fallbacks
+    const author = dc.contributor?.author?.length ? dc.contributor.author.join(', ') : dc.creator ?? 'Sin autor'
+    const issued = dc.date?.issued ? new Date(dc.date.issued) : undefined
+    const year = issued ? issued.getFullYear() : undefined
+
+    let description = ''
+    if (Array.isArray(dc.description)) {
+        description = dc.description.find(d => d.language === 'es')?.abstract ?? dc.description[0]?.abstract ?? ''
+    } else if (typeof dc.description === 'string') {
+        description = dc.description
+    }
+
     if (!title) title = id
-    if (!author) author = 'Sin autor'
     if (!description) description = 'Sin descripción disponible.'
 
     return (
@@ -49,4 +42,3 @@ export default function ResourceCard({ resource }: Props) {
         </Link>
     )
 }
-
