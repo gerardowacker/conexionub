@@ -130,22 +130,30 @@ function AdminUsersInner() {
             </div>
             {loading && <div className={styles.loading}>Cargando…</div>}
             <div className={styles.list}>
-                {visibleUsers.map(u => (
-                    <div key={u._id} className={styles.userCard}>
+                {(!loading && visibleUsers.length === 0) ? (
+                    <div className={`${styles.userCard} ${styles.placeholder}`}>
                         <div className={styles.userInfo}>
-                            <div className={styles.displayName}><strong>{u.displayName || u.email}</strong></div>
-                            <div className={styles.email}>{u.email}</div>
-                        </div>
-                        <div className={styles.roleSelect}>
-                            <select value={u.level} onChange={e => changeRole(u, e.target.value)}
-                                    className={styles.select}>
-                                <option value={0}>Usuario</option>
-                                <option value={1}>Moderador</option>
-                                <option value={2}>Administrador</option>
-                            </select>
+                            <div className={styles.displayName}><strong>No hay más usuarios (refrescar lista para confirmar)</strong></div>
                         </div>
                     </div>
-                ))}
+                ) : (
+                    visibleUsers.map(u => (
+                        <div key={u._id} className={styles.userCard}>
+                            <div className={styles.userInfo}>
+                                <div className={styles.displayName}><strong>{u.displayName || u.email}</strong></div>
+                                <div className={styles.email}>{u.email}</div>
+                            </div>
+                            <div className={styles.roleSelect}>
+                                <select value={u.level} onChange={e => changeRole(u, e.target.value)}
+                                        className={styles.select}>
+                                    <option value={0}>Usuario</option>
+                                    <option value={1}>Moderador</option>
+                                    <option value={2}>Administrador</option>
+                                </select>
+                            </div>
+                        </div>
+                    ))
+                )}
 
                 <div className={styles.actions}>
                     <button className={styles.button} onClick={() => load(true, lastUser)}>Cargar más</button>

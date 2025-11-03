@@ -19,6 +19,13 @@
     box-shadow: 0 6px 18px rgba(20, 20, 30, 0.03);
 }
 
+.placeholder {
+    background: var(--card-bg, #ffffff);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: var(--radius, 10px);
+    box-shadow: 0 6px 18px rgba(20, 20, 30, 0.03);
+}
+
 .userInfo {
     display: flex;
     flex-direction: column;
