@@ -123,7 +123,8 @@ function AdminUsersInner() {
 
     return (
         <Container id={'admin-users'} crumb={[<Link key={'rep'} href={'/repositorio'}>Repositorio</Link>,
-            <Link key={'admin'} href={'/repositorio/admin'}>Admin</Link>]}>
+            <Link key={'admin'} href={'/repositorio/admin'}>Panel de control</Link>,
+        <Link key={'users'} href={'#users'}>Usuarios</Link>]}>
             <h1 className={styles.title}>Administración de usuarios</h1>
             <div className={styles.actions}>
                 <button className={styles.buttonSecondary} onClick={() => load(false, null)}>Refrescar usuarios</button>
