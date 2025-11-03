@@ -90,9 +90,11 @@
     text-align: left;
     text-decoration: none;
     box-shadow: 0 2px 8px rgba(134, 28, 36, 0.08);
+    border: none;
     transition: box-shadow .2s, transform .2s;
     max-width: 350px;
     width: 100%;
+    cursor: pointer;
 }
 
 .see-more:hover {
