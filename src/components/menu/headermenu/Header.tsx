@@ -17,7 +17,7 @@ export default function Header() {
                         </Link>
                         <Link href="/">Inicio</Link>
                         <Link href="/#carreras">Carreras</Link>
-                        <Link href="/repositorio">Repositorio</Link>
+                        <Link href="/repositorio">Repositorio FITI</Link>
                         <Link href="/contacto">Contacto</Link>
                     </div>
                     <div className={styles.rightLinks}>
