@@ -51,7 +51,6 @@ export const ToastProvider: React.FC<{ children?: React.ReactNode }> = ({ childr
 
     const hideToast = useCallback((id: number) => removeToast(id), [removeToast]);
 
-    // cleanup on unmount
     useEffect(() => {
         return () => {
             Object.values(timersRef.current).forEach(t => window.clearTimeout(t));
