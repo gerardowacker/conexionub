@@ -4,6 +4,7 @@ import React, {useEffect, useState, useRef} from 'react';
 import {get, post} from '@/utils/request';
 import styles from '@/components/collection-tree/CollectionTree.module.css';
 import CollectionTree from '@/components/collection-tree/CollectionTree';
+import { useOptionalToast } from '@/components/toast/ToastProvider';
 
 interface Collection {
     _id: string;
@@ -51,6 +52,19 @@ export default function CollectionAdminSelector({value, onChangeAction, showCont
     const [loading, setLoading] = useState(false);
     const [selected, setSelected] = useState<string | null>(value ?? null);
     const skipNotifyRef = useRef(false);
+
+    // Obtener el contexto de toasts si existe (no lanza si no está)
+    const toastCtx = useOptionalToast();
+
+    const notify = (opts: { message: string; type?: 'info' | 'error' | 'warn' }) => {
+        if (toastCtx && typeof toastCtx.showToast === 'function') {
+            toastCtx.showToast({ message: opts.message, type: opts.type ?? 'info' });
+            return;
+        }
+        // Si no hay ToastProvider, logueamos en consola (no usamos alert para evitar modales nativos)
+        // eslint-disable-next-line no-console
+        console.warn('[notify]', opts.type ?? 'info', opts.message);
+    };
 
     const [mode, setMode] = useState<'create' | 'edit' | null>(null);
     const [editing, setEditing] = useState<Collection | null>(null);
@@ -110,7 +124,10 @@ export default function CollectionAdminSelector({value, onChangeAction, showCont
             token: localStorage.getItem('__lorest'),
             clientToken: localStorage.getItem('__lore_client')
         };
-        if (!session.token || !session.clientToken) return alert('Falta sesión');
+        if (!session.token || !session.clientToken) {
+            notify({ message: 'Falta sesión', type: 'error' });
+            return;
+        }
 
         if (mode === 'create') {
             const payload: CreateCollectionPayload = {session, collection: {name: form.name}};
@@ -119,10 +136,10 @@ export default function CollectionAdminSelector({value, onChangeAction, showCont
             if (form.parent) payload.collection.parent = form.parent;
             const res = await post('/collection/create', payload);
             if (res.response.status === 200) {
-                alert('Colección creada');
+                notify({ message: 'Colección creada', type: 'info' });
                 setMode(null);
                 await load();
-            } else alert('Error: ' + JSON.stringify(res.response.data || res.response.status));
+            } else notify({ message: 'Error: ' + JSON.stringify(res.response.data || res.response.status), type: 'error' });
         } else if (mode === 'edit' && editing) {
             const payload: UpdateCollectionPayload = {session, id: editing._id, updateData: {}};
             if (form.name) payload.updateData.name = form.name;
@@ -131,10 +148,10 @@ export default function CollectionAdminSelector({value, onChangeAction, showCont
             if (form.parent) payload.updateData.parent = form.parent;
             const res = await post('/collection/update', payload);
             if (res.response.status === 200) {
-                alert('Colección actualizada');
+                notify({ message: 'Colección actualizada', type: 'info' });
                 setMode(null);
                 await load();
-            } else alert('Error: ' + JSON.stringify(res.response.data || res.response.status));
+            } else notify({ message: 'Error: ' + JSON.stringify(res.response.data || res.response.status), type: 'error' });
         }
     };
 
@@ -171,7 +188,7 @@ export default function CollectionAdminSelector({value, onChangeAction, showCont
                         <div style={{display: 'flex', gap: 8}}>
                             <button type="button" onClick={openCreate} className={styles['toggle-btn']}>Crear</button>
                             <button type="button" onClick={() => {
-                                if (!selected) return alert('Seleccioná una colección para editar');
+                                if (!selected) { notify({ message: 'Seleccioná una colección para editar', type: 'warn' }); return; }
                                 openEditFor(collections.find(c => c._id === selected) as Collection);
                             }} className={styles['toggle-btn']}>Editar
                             </button>

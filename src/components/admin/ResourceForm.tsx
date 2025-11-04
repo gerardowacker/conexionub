@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import CollectionAdminSelector from '@/components/admin/CollectionAdminSelector';
 import styles from '@/components/form/Form.module.css';
 import { Resource } from '@/types/resources';
+import { useOptionalToast } from '@/components/toast/ToastProvider';
 
 type DcContributor = { author?: string[]; advisor?: string[] };
 
@@ -28,6 +29,18 @@ type Props = {
 const host = process.env.NEXT_PUBLIC_LORE_HOST || '';
 
 export default function ResourceForm({ initial = null, onSavedAction }: Props) {
+  // Obtener context de toast opcionalmente (no lanza si no hay provider)
+  const toastCtx = useOptionalToast();
+  const notify = (opts: { message: string; type?: 'info' | 'error' | 'warn' }) => {
+    if (toastCtx && typeof toastCtx.showToast === 'function') {
+      toastCtx.showToast({ message: opts.message, type: opts.type ?? 'info' });
+      return;
+    }
+    // Si no hay ToastProvider, logueamos en consola (no usamos alert para evitar modales nativos)
+    // eslint-disable-next-line no-console
+    console.warn('[notify]', opts.type ?? 'info', opts.message);
+  };
+
   const [dc, setDc] = useState<Dc>({
     title: typeof initial?.dc?.title === 'string' ? initial?.dc?.title : (Array.isArray(initial?.dc?.title) ? initial?.dc?.title : ''),
     creator: initial?.dc?.creator || '',
@@ -68,8 +81,14 @@ export default function ResourceForm({ initial = null, onSavedAction }: Props) {
   const submit = async () => {
     const token = localStorage.getItem('__lorest');
     const clientToken = localStorage.getItem('__lore_client');
-    if (!token || !clientToken) return alert('Falta sesión');
-    if (!collection) return alert('Seleccioná la colección destino');
+    if (!token || !clientToken) {
+      notify({ message: 'Falta sesión', type: 'error' });
+      return;
+    }
+    if (!collection) {
+      notify({ message: 'Seleccioná la colección destino', type: 'warn' });
+      return;
+    }
 
     const metadata = {
       dc,
@@ -96,10 +115,10 @@ export default function ResourceForm({ initial = null, onSavedAction }: Props) {
           const res = await fetch(host + '/resource/update', { method: 'POST', body: fd });
           const data = await res.json();
           if (res.status === 200) {
-            alert('Recurso actualizado');
+            notify({ message: 'Recurso actualizado', type: 'info' });
             if (onSavedAction) onSavedAction(data as Record<string, unknown>);
           } else {
-            alert('Error: ' + JSON.stringify(data));
+            notify({ message: 'Error: ' + JSON.stringify(data), type: 'error' });
           }
         } else {
           // Sin archivo: enviamos JSON con session, id y updateData (metadata)
@@ -107,10 +126,10 @@ export default function ResourceForm({ initial = null, onSavedAction }: Props) {
           const res = await fetch(host + '/resource/update', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
           const data = await res.json();
           if (res.status === 200) {
-            alert('Recurso actualizado');
+            notify({ message: 'Recurso actualizado', type: 'info' });
             if (onSavedAction) onSavedAction(data as Record<string, unknown>);
           } else {
-            alert('Error: ' + JSON.stringify(data));
+            notify({ message: 'Error: ' + JSON.stringify(data), type: 'error' });
           }
         }
       } else {
@@ -124,15 +143,15 @@ export default function ResourceForm({ initial = null, onSavedAction }: Props) {
         const res = await fetch(host + '/resource/create', { method: 'POST', body: fd });
         const data = await res.json();
         if (res.status === 200) {
-          alert('Recurso creado');
+          notify({ message: 'Recurso creado', type: 'info' });
           if (onSavedAction) onSavedAction(data as Record<string, unknown>);
         } else {
-          alert('Error: ' + JSON.stringify(data));
+          notify({ message: 'Error: ' + JSON.stringify(data), type: 'error' });
         }
       }
     } catch (err) {
       console.error(err);
-      alert('Error en la subida/actualización: ' + String(err));
+      notify({ message: 'Error en la subida/actualización: ' + String(err), type: 'error' });
     } finally {
       setLoading(false);
     }
