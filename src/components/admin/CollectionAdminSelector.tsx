@@ -185,31 +185,30 @@ export default function CollectionAdminSelector({value, onChangeAction, showCont
                     <div className={styles.modal}>
                         <div className={styles.modalHeader}>
                             <div>{mode === 'create' ? 'Crear colección' : 'Editar colección'}</div>
-                            <button aria-label="Cerrar" className={styles.closeBtn} onClick={() => setMode(null)}>×
-                            </button>
+                            <button aria-label="Cerrar" className={styles.closeBtn} onClick={() => setMode(null)}>×</button>
                         </div>
                         <div className={styles.modalBody}>
-                            <label>
-                                Título
-                                <input value={form.name} onChange={e => setForm({...form, name: e.target.value})}/>
-                            </label>
-                            <label>
-                                Descripción
-                                <input value={form.description}
-                                       onChange={e => setForm({...form, description: e.target.value})}/>
-                            </label>
-                            <label>
-                                Licencia
-                                <input value={form.licence}
-                                       onChange={e => setForm({...form, licence: e.target.value})}/>
-                            </label>
-                            <label>
-                                Padre
-                                <select value={form.parent} onChange={e => setForm({...form, parent: e.target.value})}>
-                                    <option value={''}>Ninguno</option>
-                                    {options.map(o => <option key={o.id} value={o.id}>{o.name}</option>)}
-                                </select>
-                            </label>
+                            <div className={styles.dialogForm}>
+                                <label>
+                                    Título
+                                    <input value={form.name} onChange={e => setForm({...form, name: e.target.value})} />
+                                </label>
+                                <label>
+                                    Descripción
+                                    <input value={form.description} onChange={e => setForm({...form, description: e.target.value})} />
+                                </label>
+                                <label>
+                                    Licencia
+                                    <input value={form.licence} onChange={e => setForm({...form, licence: e.target.value})} />
+                                </label>
+                                <label>
+                                    Padre
+                                    <select value={form.parent} onChange={e => setForm({...form, parent: e.target.value})}>
+                                        <option value={''}>Ninguno</option>
+                                        {options.map(o => <option key={o.id} value={o.id}>{o.name}</option>)}
+                                    </select>
+                                </label>
+                            </div>
                         </div>
                         <div className={styles.modalFooter}>
                             <button className={styles.btnSecondary} onClick={() => setMode(null)}>Cancelar</button>
