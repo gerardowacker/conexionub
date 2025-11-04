@@ -7,6 +7,7 @@ import { useSession } from '@/context/SessionContext';
 import ResourceForm from '@/components/admin/ResourceForm';
 import { get } from '@/utils/request';
 import { Resource } from '@/types/resources';
+import { ToastProvider } from '@/components/toast/ToastProvider';
 
 export default function AdminResources() {
     const {user} = useSession();
@@ -28,7 +29,7 @@ export default function AdminResources() {
         const res = await get(`/resources?pageSize=${pageSize}&desc=${desc}`);
         console.log('[admin resources] response', res.response);
         // manejar distintas formas de respuesta: array directo o objeto con `resources` / `data` / `result`
-        let data: Resource[] = [];
+        let data: Resource[];
         try {
             const body = res.response.data;
             console.log('[admin resources] body', body);
@@ -56,11 +57,12 @@ export default function AdminResources() {
     }
 
     return (
-        <Container id={'admin-resources'} crumb={[<Link key={'rep'} href={'/repositorio'}>Repositorio</Link>, <Link key={'admin'} href={'/repositorio/admin'}>Admin</Link>]}>
-            <h1>Administración de recursos</h1>
-            <p>Puedes crear y editar recursos desde aquí.</p>
+        <ToastProvider>
+         <Container id={'admin-resources'} crumb={[<Link key={'rep'} href={'/repositorio'}>Repositorio</Link>, <Link key={'admin'} href={'/repositorio/admin'}>Admin</Link>]}>
+             <h1>Administración de recursos</h1>
+             <p>Puedes crear y editar recursos desde aquí.</p>
 
-            <div style={{marginTop: 16}}>
+             <div style={{marginTop: 16}}>
                 <div style={{display: 'flex', gap: 8, alignItems: 'center'}}>
                     <button onClick={() => setSelected(null)}>Nuevo recurso</button>
                     <div style={{marginLeft: 'auto'}}>
@@ -95,6 +97,7 @@ export default function AdminResources() {
                     )}
                 </div>
             </div>
-        </Container>
-    );
-}
+         </Container>
+        </ToastProvider>
+     );
+ }
