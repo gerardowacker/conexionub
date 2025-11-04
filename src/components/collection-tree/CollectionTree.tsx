@@ -26,7 +26,7 @@ function CollectionTree({collections, selectable = false, onSelect, selectedId =
     if (!collections || collections.length === 0) {
         if (isRoot && header) {
             return (
-                <div className={styles['container']}>
+                <div className={styles['treeContainer']}>
                     {header}
                     <ul className={styles['collections']}/>
                 </div>
@@ -36,7 +36,7 @@ function CollectionTree({collections, selectable = false, onSelect, selectedId =
     }
     if (isRoot) {
         return (
-            <div className={styles['container']}>
+            <div className={styles['treeContainer']}>
                 {header}
                 <ul className={styles['collections']}>
                     {collections.map(col => (
@@ -66,6 +66,20 @@ function CollectionItem({collection, selectable = false, onSelect, selectedId}: 
     const [open, setOpen] = useState(false);
     const hasChildren = collection.children && collection.children.length > 0;
     const isSelected = selectedId === collection._id;
+
+    const itemStyle: React.CSSProperties = {
+        background: 'transparent',
+        border: 'none',
+        color: 'var(--ub-red)',
+        fontSize: '1.15rem',
+        fontWeight: 500,
+        padding: '0.75rem',
+        textDecoration: 'none',
+        display: 'block',
+        width: '100%',
+        textAlign: 'left'
+    };
+
     return (
         <li>
             <div className={styles['collection-row']}>
@@ -80,12 +94,11 @@ function CollectionItem({collection, selectable = false, onSelect, selectedId}: 
                     </button>
                 ) : <div className={styles['toggle-btn']}/>}
                 {selectable ? (
-                    <button type="button" className={`${styles['collection']} ${isSelected ? styles['selected'] : ''}`}
-                            onClick={() => onSelect?.(collection)}>
+                    <button type="button" className={`${styles['collection']} ${isSelected ? styles['selected'] : ''}`} onClick={() => onSelect?.(collection)} style={itemStyle}>
                         {collection.name}
                     </button>
                 ) : (
-                    <a href={`/repositorio/coleccion/${collection._id}`} className={styles['collection']}>
+                    <a href={`/repositorio/coleccion/${collection._id}`} className={styles['collection']} style={itemStyle}>
                         {collection.name}
                     </a>
                 )}
