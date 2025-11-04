@@ -94,11 +94,13 @@ function CollectionItem({collection, selectable = false, onSelect, selectedId}: 
                     </button>
                 ) : <div className={styles['toggle-btn']}/>}
                 {selectable ? (
-                    <button type="button" className={`${styles['collection']} ${isSelected ? styles['selected'] : ''}`} onClick={() => onSelect?.(collection)} style={itemStyle}>
+                    <button type="button" className={`${styles['collection']} ${isSelected ? styles['selected'] : ''}`}
+                            onClick={() => onSelect?.(collection)} style={itemStyle}>
                         {collection.name}
                     </button>
                 ) : (
-                    <a href={`/repositorio/coleccion/${collection._id}`} className={styles['collection']} style={itemStyle}>
+                    <a href={`/repositorio/coleccion/${collection._id}`} className={styles['collection']}
+                       style={itemStyle}>
                         {collection.name}
                     </a>
                 )}

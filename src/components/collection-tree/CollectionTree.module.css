@@ -223,9 +223,9 @@
 
 .dialogForm {
     background: #fff;
-    border: 1px solid rgba(0,0,0,0.06);
+    border: 1px solid rgba(0, 0, 0, 0.06);
     border-radius: 12px;
-    box-shadow: 0 8px 18px rgba(0,0,0,0.04);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.04);
     padding: 16px;
     display: flex;
     flex-direction: column;
@@ -254,7 +254,9 @@
     margin-top: .5rem;
 }
 
-.dialogForm input { height: 44px; }
+.dialogForm input {
+    height: 44px;
+}
 
 .dialogForm input:focus,
 .dialogForm select:focus,
@@ -262,5 +264,5 @@
     outline: none;
     border-color: var(--ub-red);
     background: #fff;
-    box-shadow: 0 0 0 3px rgba(134,28,36,.08);
+    box-shadow: 0 0 0 3px rgba(134, 28, 36, .08);
 }
