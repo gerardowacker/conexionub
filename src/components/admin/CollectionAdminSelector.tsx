@@ -4,7 +4,7 @@ import React, {useEffect, useState, useRef} from 'react';
 import {get, post} from '@/utils/request';
 import styles from '@/components/collection-tree/CollectionTree.module.css';
 import CollectionTree from '@/components/collection-tree/CollectionTree';
-import { useOptionalToast } from '@/components/toast/ToastProvider';
+import {useOptionalToast} from '@/components/toast/ToastProvider';
 
 interface Collection {
     _id: string;
@@ -12,16 +12,15 @@ interface Collection {
     description?: string;
     licence?: string;
     children?: Collection[];
-    parent?: string | { _id?: string; name?: string } | null; // soporta id o objeto padre
+    parent?: string | { _id?: string; name?: string } | null; 
 }
 
 type Props = {
     value?: string | null;
-    onChangeAction?: (id: string | null) => void; // renamed to satisfy Next.js props rule
-    showControls?: boolean; // muestra botones crear/editar
+    onChangeAction?: (id: string | null) => void; 
+    showControls?: boolean; 
 };
 
-// Payload types
 interface SessionPayload {
     token: string | null;
     clientToken: string | null
@@ -38,7 +37,6 @@ interface UpdateCollectionPayload {
     updateData: { name?: string; description?: string; licence?: string; parent?: string }
 }
 
-// Helper to flatten collections into options with indentation
 function flatten(collections: Collection[], depth = 0, out: { id: string; name: string }[] = []) {
     collections.forEach(c => {
         out.push({id: c._id, name: `${'\u2014 '.repeat(depth)}${c.name}`});
@@ -53,16 +51,14 @@ export default function CollectionAdminSelector({value, onChangeAction, showCont
     const [selected, setSelected] = useState<string | null>(value ?? null);
     const skipNotifyRef = useRef(false);
 
-    // Obtener el contexto de toasts si existe (no lanza si no está)
     const toastCtx = useOptionalToast();
 
     const notify = (opts: { message: string; type?: 'info' | 'error' | 'warn' }) => {
         if (toastCtx && typeof toastCtx.showToast === 'function') {
-            toastCtx.showToast({ message: opts.message, type: opts.type ?? 'info' });
+            toastCtx.showToast({message: opts.message, type: opts.type ?? 'info'});
             return;
         }
-        // Si no hay ToastProvider, logueamos en consola (no usamos alert para evitar modales nativos)
-        // eslint-disable-next-line no-console
+         
         console.warn('[notify]', opts.type ?? 'info', opts.message);
     };
 
@@ -125,7 +121,7 @@ export default function CollectionAdminSelector({value, onChangeAction, showCont
             clientToken: localStorage.getItem('__lore_client')
         };
         if (!session.token || !session.clientToken) {
-            notify({ message: 'Falta sesión', type: 'error' });
+            notify({message: 'Falta sesión', type: 'error'});
             return;
         }
 
@@ -136,10 +132,13 @@ export default function CollectionAdminSelector({value, onChangeAction, showCont
             if (form.parent) payload.collection.parent = form.parent;
             const res = await post('/collection/create', payload);
             if (res.response.status === 200) {
-                notify({ message: 'Colección creada', type: 'info' });
+                notify({message: 'Colección creada', type: 'info'});
                 setMode(null);
                 await load();
-            } else notify({ message: 'Error: ' + JSON.stringify(res.response.data || res.response.status), type: 'error' });
+            } else notify({
+                message: 'Error: ' + JSON.stringify(res.response.data || res.response.status),
+                type: 'error'
+            });
         } else if (mode === 'edit' && editing) {
             const payload: UpdateCollectionPayload = {session, id: editing._id, updateData: {}};
             if (form.name) payload.updateData.name = form.name;
@@ -148,10 +147,13 @@ export default function CollectionAdminSelector({value, onChangeAction, showCont
             if (form.parent) payload.updateData.parent = form.parent;
             const res = await post('/collection/update', payload);
             if (res.response.status === 200) {
-                notify({ message: 'Colección actualizada', type: 'info' });
+                notify({message: 'Colección actualizada', type: 'info'});
                 setMode(null);
                 await load();
-            } else notify({ message: 'Error: ' + JSON.stringify(res.response.data || res.response.status), type: 'error' });
+            } else notify({
+                message: 'Error: ' + JSON.stringify(res.response.data || res.response.status),
+                type: 'error'
+            });
         }
     };
 
@@ -188,7 +190,10 @@ export default function CollectionAdminSelector({value, onChangeAction, showCont
                         <div style={{display: 'flex', gap: 8}}>
                             <button type="button" onClick={openCreate} className={styles['toggle-btn']}>Crear</button>
                             <button type="button" onClick={() => {
-                                if (!selected) { notify({ message: 'Seleccioná una colección para editar', type: 'warn' }); return; }
+                                if (!selected) {
+                                    notify({message: 'Seleccioná una colección para editar', type: 'warn'});
+                                    return;
+                                }
                                 openEditFor(collections.find(c => c._id === selected) as Collection);
                             }} className={styles['toggle-btn']}>Editar
                             </button>
@@ -202,25 +207,29 @@ export default function CollectionAdminSelector({value, onChangeAction, showCont
                     <div className={styles.modal}>
                         <div className={styles.modalHeader}>
                             <div>{mode === 'create' ? 'Crear colección' : 'Editar colección'}</div>
-                            <button aria-label="Cerrar" className={styles.closeBtn} onClick={() => setMode(null)}>×</button>
+                            <button aria-label="Cerrar" className={styles.closeBtn} onClick={() => setMode(null)}>×
+                            </button>
                         </div>
                         <div className={styles.modalBody}>
                             <div className={styles.dialogForm}>
                                 <label>
                                     Título
-                                    <input value={form.name} onChange={e => setForm({...form, name: e.target.value})} />
+                                    <input value={form.name} onChange={e => setForm({...form, name: e.target.value})}/>
                                 </label>
                                 <label>
                                     Descripción
-                                    <input value={form.description} onChange={e => setForm({...form, description: e.target.value})} />
+                                    <input value={form.description}
+                                           onChange={e => setForm({...form, description: e.target.value})}/>
                                 </label>
                                 <label>
                                     Licencia
-                                    <input value={form.licence} onChange={e => setForm({...form, licence: e.target.value})} />
+                                    <input value={form.licence}
+                                           onChange={e => setForm({...form, licence: e.target.value})}/>
                                 </label>
                                 <label>
                                     Padre
-                                    <select value={form.parent} onChange={e => setForm({...form, parent: e.target.value})}>
+                                    <select value={form.parent}
+                                            onChange={e => setForm({...form, parent: e.target.value})}>
                                         <option value={''}>Ninguno</option>
                                         {options.map(o => <option key={o.id} value={o.id}>{o.name}</option>)}
                                     </select>

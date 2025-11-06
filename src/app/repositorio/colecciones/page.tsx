@@ -1,6 +1,6 @@
 import Container from "@/components/container/Container";
 import Link from "next/link";
-import { get } from "@/utils/request";
+import {get} from "@/utils/request";
 
 import CollectionTree from "@/components/collection-tree/CollectionTree";
 
@@ -20,9 +20,10 @@ export default async function Collections() {
 
     return (
         <Container id={'colecciones'}
-                   crumb={[<Link key={'rep'} href={'/repositorio'}>Repositorio</Link>, <Link key={'Colecciones'} href={'#colecciones'}>Colecciones</Link>]}>
+                   crumb={[<Link key={'rep'} href={'/repositorio'}>Repositorio</Link>,
+                       <Link key={'Colecciones'} href={'#colecciones'}>Colecciones</Link>]}>
             <h1 className={styles['title']}>Colecciones del repositorio</h1>
-            <CollectionTree collections={collections} />
+            <CollectionTree collections={collections}/>
         </Container>
     )
 }
