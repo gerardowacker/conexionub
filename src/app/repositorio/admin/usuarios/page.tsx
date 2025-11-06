@@ -124,7 +124,7 @@ function AdminUsersInner() {
     return (
         <Container id={'admin-users'} crumb={[<Link key={'rep'} href={'/repositorio'}>Repositorio</Link>,
             <Link key={'admin'} href={'/repositorio/admin'}>Panel de control</Link>,
-        <Link key={'users'} href={'#users'}>Usuarios</Link>]}>
+            <Link key={'users'} href={'#users'}>Usuarios</Link>]}>
             <h1 className={styles.title}>Administración de usuarios</h1>
             <div className={styles.actions}>
                 <button className={styles.buttonSecondary} onClick={() => load(false, null)}>Refrescar usuarios</button>
@@ -134,7 +134,8 @@ function AdminUsersInner() {
                 {(!loading && visibleUsers.length === 0) ? (
                     <div className={`${styles.userCard} ${styles.placeholder}`}>
                         <div className={styles.userInfo}>
-                            <div className={styles.displayName}><strong>No hay más usuarios (refrescar lista para confirmar)</strong></div>
+                            <div className={styles.displayName}><strong>No hay más usuarios (refrescar lista para
+                                confirmar)</strong></div>
                         </div>
                     </div>
                 ) : (
