@@ -131,8 +131,9 @@ export default function AdminResources() {
 
     return (
         <ToastProvider>
-            <Container id={'admin-resources'} crumb={[<Link key={'rep'} href={'/repositorio'}>Repositorio</Link>,
-                <Link key={'admin'} href={'/repositorio/admin'}>Admin</Link>]}>
+            <Container id={'admin-users'} crumb={[<Link key={'rep'} href={'/repositorio'}>Repositorio</Link>,
+                <Link key={'admin'} href={'/repositorio/admin'}>Panel de control</Link>,
+                <Link key={'res'} href={'#res'}>Recursos</Link>]}>
                 <h1 className={styles['title']}>Administración de recursos</h1>
 
                 <div className={styles.controlsRow}>
