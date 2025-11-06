@@ -6,14 +6,7 @@ import styles from '@/components/collection-tree/CollectionTree.module.css';
 import CollectionTree from '@/components/collection-tree/CollectionTree';
 import {useOptionalToast} from '@/components/toast/ToastProvider';
 
-interface Collection {
-    _id: string;
-    name: string;
-    description?: string;
-    licence?: string;
-    children?: Collection[];
-    parent?: string | { _id?: string; name?: string } | null; 
-}
+import type { Collection } from '@/types/collections';
 
 type Props = {
     value?: string | null;
@@ -58,7 +51,7 @@ export default function CollectionAdminSelector({value, onChangeAction, showCont
             toastCtx.showToast({message: opts.message, type: opts.type ?? 'info'});
             return;
         }
-         
+
         console.warn('[notify]', opts.type ?? 'info', opts.message);
     };
 
@@ -166,7 +159,7 @@ export default function CollectionAdminSelector({value, onChangeAction, showCont
         <div>
             {showControls ? (
                 <CollectionTree
-                    collections={collections.map(c => ({...c, children: c.children ?? []}))}
+                    collections={collections.map(c => ({...c, children: c.children ?? []}) as Collection)}
                     selectable={true}
                     onSelect={handleTreeSelect}
                     selectedId={selected}

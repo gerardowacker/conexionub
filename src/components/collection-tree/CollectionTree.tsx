@@ -5,15 +5,9 @@ import {ChevronDown, ChevronRight} from "lucide-react";
 import {useState} from "react";
 import styles from "./CollectionTree.module.css";
 
-interface Collection {
-    _id: string;
-    name: string;
-    description?: string;
-    licence?: string;
-    children: Collection[];
-}
+import type { Collection } from '@/types/collections';
 
-type Props = {
+interface Props {
     collections: Collection[];
     selectable?: boolean;
     onSelect?: (col: Collection) => void;
@@ -106,7 +100,7 @@ function CollectionItem({collection, selectable = false, onSelect, selectedId}: 
                 )}
             </div>
             {hasChildren && open && (
-                <CollectionTree collections={collection.children} selectable={selectable} onSelect={onSelect}
+                <CollectionTree collections={collection.children ?? []} selectable={selectable} onSelect={onSelect}
                                 selectedId={selectedId} isRoot={false}/>
             )}
         </li>
