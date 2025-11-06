@@ -6,12 +6,12 @@ import styles from '@/components/collection-tree/CollectionTree.module.css';
 import CollectionTree from '@/components/collection-tree/CollectionTree';
 import {useOptionalToast} from '@/components/toast/ToastProvider';
 
-import type { Collection } from '@/types/collections';
+import type {Collection} from '@/types/collections';
 
 type Props = {
     value?: string | null;
-    onChangeAction?: (id: string | null) => void; 
-    showControls?: boolean; 
+    onChangeAction?: (id: string | null) => void;
+    showControls?: boolean;
 };
 
 interface SessionPayload {

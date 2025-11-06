@@ -9,12 +9,12 @@ import {useOptionalToast} from '@/components/toast/ToastProvider';
 type DcContributor = { author?: string[]; advisor?: string[] };
 
 type Dc = {
-    title?: string | { language: string; title: string }[];
+    title?: string;
     creator?: string;
     type?: string;
     contributor?: DcContributor;
     date?: { available?: string | Date; issued?: string | Date };
-    description?: string | { language: string; abstract: string }[];
+    description?: string;
     format?: string;
     subject?: string[];
     publisher?: string;
@@ -42,6 +42,38 @@ const DC_OPTIONS: { value: string; label: string }[] = [
     {value: 'dc:rights', label: 'Rights / Licencia (dc:rights)'}
 ];
 
+function extractSpanishTitle(t: unknown): string {
+    if (!t) return '';
+    if (typeof t === 'string') return t;
+    if (Array.isArray(t)) {
+        const arr = t as unknown[];
+        const found = arr.find((x): x is {
+            language?: string;
+            title?: string
+        } => typeof x === 'object' && x !== null && ((x as { language?: unknown }).language === 'es'));
+        if (found && found.title) return found.title;
+        const first = arr[0] as { title?: string } | undefined;
+        if (first && first.title) return first.title;
+    }
+    return '';
+}
+
+function extractSpanishDescription(d: unknown): string {
+    if (!d) return '';
+    if (typeof d === 'string') return d;
+    if (Array.isArray(d)) {
+        const arr = d as unknown[];
+        const found = arr.find((x): x is {
+            language?: string;
+            abstract?: string
+        } => typeof x === 'object' && x !== null && ((x as { language?: unknown }).language === 'es'));
+        if (found && found.abstract) return found.abstract;
+        const first = arr[0] as { abstract?: string } | undefined;
+        if (first && first.abstract) return first.abstract;
+    }
+    return '';
+}
+
 export default forwardRef(function ResourceForm({initial = null, onSavedAction}: Props, ref) {
     const toastCtx = useOptionalToast();
     const notify = (opts: { message: string; type?: 'info' | 'error' | 'warn' }) => {
@@ -50,17 +82,16 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
             return;
         }
         // fallback console
-        // eslint-disable-next-line no-console
         console.warn('[notify]', opts.type ?? 'info', opts.message);
     };
 
     const [dc, setDc] = useState<Dc>({
-        title: typeof initial?.dc?.title === 'string' ? initial?.dc?.title : (Array.isArray(initial?.dc?.title) ? initial?.dc?.title : ''),
+        title: extractSpanishTitle(initial?.dc?.title),
         creator: initial?.dc?.creator || '',
         type: initial?.dc?.type || '',
         contributor: initial?.dc?.contributor || {author: [], advisor: []},
         date: initial?.dc?.date || {},
-        description: typeof initial?.dc?.description === 'string' ? initial?.dc?.description : (Array.isArray(initial?.dc?.description) ? initial?.dc?.description : ''),
+        description: extractSpanishDescription(initial?.dc?.description),
         format: initial?.dc?.format || '',
         subject: initial?.dc?.subject || [],
         publisher: initial?.dc?.publisher || '',
@@ -69,28 +100,30 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
 
     const [collection, setCollection] = useState<string | null>(initial?.access?.collection || null);
     const [file, setFile] = useState<File | null>(null);
-    const [loading, setLoading] = useState(false);
+    const [, setLoading] = useState(false);
 
     const [extraFields, setExtraFields] = useState<{ key: string; value: string }[]>([]);
     const [collectionOptions, setCollectionOptions] = useState<{ id: string; name: string }[]>([]);
-    const [loadingCollections, setLoadingCollections] = useState(false);
+    const [, setLoadingCollections] = useState(false);
 
     useEffect(() => {
         async function loadCollections() {
             setLoadingCollections(true);
             try {
                 const res = await get('/collections');
-                const cols = Array.isArray(res.response.data) ? res.response.data : [];
+                const cols = Array.isArray(res.response.data) ? res.response.data as unknown[] : [];
                 const opts: { id: string; name: string }[] = [];
 
-                function flatten(list: unknown[], depth = 0) {
-                    (list as any[]).forEach((c: any) => {
+                type Col = { _id: string; name: string; children?: Col[] };
+
+                function flatten(list: Col[], depth = 0) {
+                    list.forEach((c: Col) => {
                         opts.push({id: c._id, name: `${'- '.repeat(depth)}${c.name}`});
                         if (c.children && c.children.length) flatten(c.children, depth + 1);
                     });
                 }
 
-                flatten(cols);
+                flatten(cols as Col[]);
                 setCollectionOptions(opts);
             } catch (err) {
                 console.error('Error cargando colecciones', err);
@@ -106,12 +139,12 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
         if (!initial) return;
         setDc(prev => ({
             ...prev,
-            title: typeof initial.dc?.title === 'string' ? initial.dc.title : (Array.isArray(initial.dc?.title) ? initial.dc.title : prev.title),
+            title: extractSpanishTitle(initial.dc?.title) || prev.title,
             creator: initial.dc?.creator || prev.creator,
             type: initial.dc?.type || prev.type,
             contributor: initial.dc?.contributor || prev.contributor,
             date: initial.dc?.date || prev.date,
-            description: typeof initial.dc?.description === 'string' ? initial.dc.description : (Array.isArray(initial.dc?.description) ? initial.dc.description : prev.description),
+            description: extractSpanishDescription(initial.dc?.description) || prev.description,
             format: initial.dc?.format || prev.format,
             subject: initial.dc?.subject || prev.subject,
             publisher: initial.dc?.publisher || prev.publisher,
@@ -136,22 +169,52 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
             return;
         }
 
-        const dcCopy: any = {...dc};
+        const dcCopy = {...dc} as Record<string, unknown>;
+
+        const titleVal = dcCopy['title'];
+        if (titleVal) {
+            if (typeof titleVal === 'string') {
+                dcCopy['title'] = [{language: 'es', title: titleVal}];
+            } else if (Array.isArray(titleVal)) {
+                // ensure each has language/title
+                dcCopy['title'] = (titleVal as unknown[]).map((t) => typeof t === 'string' ? {
+                    language: 'es',
+                    title: t
+                } : (t as { language?: string; title?: string }));
+            }
+        } else {
+            dcCopy['title'] = [{language: 'es', title: ''}];
+        }
+
+        const descVal = dcCopy['description'];
+        if (descVal) {
+            if (typeof descVal === 'string') {
+                dcCopy['description'] = [{language: 'es', abstract: descVal}];
+            } else if (Array.isArray(descVal)) {
+                dcCopy['description'] = (descVal as unknown[]).map((d) => (typeof d === 'string' ? {
+                    language: 'es',
+                    abstract: d
+                } : (d as { language?: string; abstract?: string })));
+            }
+        }
+
         for (const f of extraFields) {
             const k = f.key;
             const v = f.value;
             if (k.startsWith('dc:')) {
                 const path = k.slice(3).split('.');
-                let cur = dcCopy;
+                let cur: Record<string, unknown> = dcCopy;
                 for (let i = 0; i < path.length - 1; i++) {
                     const p = path[i];
-                    if (!cur[p]) cur[p] = {};
-                    cur = cur[p];
+                    const next = (cur as Record<string, unknown>)[p];
+                    if (!next || typeof next !== 'object') (cur as Record<string, unknown>)[p] = {};
+                    cur = (cur as Record<string, unknown>)[p] as Record<string, unknown>;
                 }
                 const last = path[path.length - 1];
-                if (Array.isArray(cur[last])) cur[last].push(v);
-                else if (cur[last] && typeof cur[last] === 'string') cur[last] = [cur[last], v];
-                else cur[last] = v;
+                const lastVal = (cur as Record<string, unknown>)[last];
+                if (Array.isArray(lastVal)) (lastVal as unknown[]).push(v);
+                else if (lastVal && typeof lastVal === 'string') (cur as Record<string, unknown>)[last] = [lastVal, v];
+                else (cur as Record<string, unknown>)[last] = v;
             }
         }
 
@@ -223,7 +286,7 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
         <div className={treeStyles['dialogForm']}>
             <label>
                 Título (dc:title)
-                <input value={typeof dc.title === 'string' ? dc.title : ''}
+                <input value={dc.title ?? ''}
                        onChange={e => setField('title', e.target.value)}/>
             </label>
 
@@ -235,6 +298,11 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
             <label>
                 Tipo (dc:type)
                 <input value={dc.type || ''} onChange={e => setField('type', e.target.value)}/>
+            </label>
+
+            <label>
+                Descripción / Resumen (dc:description)
+                <textarea value={dc.description || ''} onChange={e => setField('description', e.target.value)}/>
             </label>
 
             {extraFields.map((f, idx) => (
