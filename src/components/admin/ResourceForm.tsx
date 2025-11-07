@@ -75,6 +75,8 @@ function extractSpanishDescription(d: unknown): string {
     return '';
 }
 
+const MULTI_ALLOWED = new Set(['dc:contributor.author', 'dc:contributor.advisor', 'dc:subject']);
+
 export default forwardRef(function ResourceForm({initial = null, onSavedAction}: Props, ref) {
     const toastCtx = useOptionalToast();
     const {token, clientToken} = useSession();
@@ -106,8 +108,6 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
     const [extraFields, setExtraFields] = useState<{ key: string; value: string }[]>([]);
     const [collectionOptions, setCollectionOptions] = useState<{ id: string; name: string }[]>([]);
     const [, setLoadingCollections] = useState(false);
-
-    const MULTI_ALLOWED = new Set(['dc:contributor.author', 'dc:contributor.advisor', 'dc:subject']);
 
     useEffect(() => {
         async function loadCollections() {
@@ -154,7 +154,89 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
             rights: initial.dc?.rights || prev.rights,
         }));
         setCollection(initial.access?.collection || null);
-    }, [initial]);
+
+        if (initial.dc && extraFields.length === 0) {
+            const skipKeys = new Set([
+                'dc:title', 'dc:creator', 'dc:description', 'dc:format', 'dc:subject', 'dc:publisher', 'dc:rights',
+            ]);
+
+            const foundExtras: { key: string; value: string }[] = [];
+
+            DC_OPTIONS.forEach(o => {
+                const key = o.value;
+                if (skipKeys.has(key)) return;
+
+                const path = key.slice(3).split('.');
+                let cur: unknown = initial.dc as unknown;
+                for (let i = 0; i < path.length; i++) {
+                    if (cur == null) {
+                        cur = undefined;
+                        break;
+                    }
+                    if (typeof cur === 'object') {
+                        const obj = cur as Record<string, unknown>;
+                        if (Object.prototype.hasOwnProperty.call(obj, path[i])) {
+                            cur = obj[path[i]];
+                        } else {
+                            cur = undefined;
+                            break;
+                        }
+                    } else {
+                        cur = undefined;
+                        break;
+                    }
+                }
+
+                if (cur === undefined || cur === null) return;
+
+                const extractValue = (v: unknown): string | null => {
+                    if (v == null) return null;
+                    if (typeof v === 'string') return v.trim() ? v : null;
+                    if (typeof v === 'number' || typeof v === 'boolean') return String(v);
+                    if (Array.isArray(v)) {
+                        const parts = (v as unknown[]).map((x) => extractValue(x));
+                        const filtered = parts.filter((x): x is string => x != null);
+                        return filtered.length ? filtered.join(', ') : null;
+                    }
+                    if (typeof v === 'object') {
+                        const obj = v as Record<string, unknown>;
+                        const maybe = obj.title ?? obj.name ?? obj.abstract ?? obj.value ?? obj.label ?? obj['@value'];
+                        if (typeof maybe === 'string' && maybe.trim()) return maybe;
+                        if (typeof maybe === 'number' || typeof maybe === 'boolean') return String(maybe);
+                        try {
+                            const str = JSON.stringify(obj);
+                            return str && str !== '{}' ? str : null;
+                        } catch {
+                            return null;
+                        }
+                    }
+                    return null;
+                };
+
+                if (Array.isArray(cur)) {
+                    const arr = cur as unknown[];
+                    if (MULTI_ALLOWED.has(key)) {
+                        arr.forEach((v) => {
+                            const val = extractValue(v);
+                            if (val != null) foundExtras.push({key, value: val});
+                        });
+                    } else {
+                        const mapped = arr.map((v) => extractValue(v));
+                        const filtered = mapped.filter((x): x is string => x != null);
+                        const val = filtered.length ? filtered[0] : null;
+                        if (val != null) foundExtras.push({key, value: val});
+                    }
+                } else if (typeof cur === 'object') {
+                    const val = extractValue(cur);
+                    if (val != null) foundExtras.push({key, value: val});
+                } else {
+                    foundExtras.push({key, value: String(cur)});
+                }
+            });
+
+            if (foundExtras.length) setExtraFields(foundExtras);
+        }
+    }, [initial, extraFields.length]);
 
     const setField = <K extends keyof Dc>(k: K, v: Dc[K]) => setDc(s => ({...s, [k]: v}));
 
@@ -315,7 +397,10 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
         if (Object.prototype.hasOwnProperty.call(changed, 'value')) {
             const v = changed.value as string | undefined;
             if (!v || v.trim() === '') {
-                notify({message: 'El valor del campo no puede estar vacío. Eliminá el campo si no lo necesitás.', type: 'warn'});
+                notify({
+                    message: 'El valor del campo no puede estar vacío. Eliminá el campo si no lo necesitás.',
+                    type: 'warn'
+                });
                 return;
             }
         }
