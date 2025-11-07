@@ -177,7 +177,6 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
             if (typeof titleVal === 'string') {
                 dcCopy['title'] = [{language: 'es', title: titleVal}];
             } else if (Array.isArray(titleVal)) {
-                // ensure each has language/title
                 dcCopy['title'] = (titleVal as unknown[]).map((t) => typeof t === 'string' ? {
                     language: 'es',
                     title: t
@@ -197,6 +196,12 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
                     abstract: d
                 } : (d as { language?: string; abstract?: string })));
             }
+        }
+
+        const emptyExtras = extraFields.filter(f => f.value.trim() === '');
+        if (emptyExtras.length > 0) {
+            notify({message: 'Completá todos los campos o eliminalos antes de guardar', type: 'warn'});
+            return;
         }
 
         for (const f of extraFields) {
@@ -278,6 +283,11 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
 
     const addExtraField = () => {
         setExtraFields(prev => {
+            const hasEmpty = prev.some(p => p.value.trim() === '');
+            if (hasEmpty) {
+                notify({message: 'Completá o eliminá el campo vacío antes de agregar otro', type: 'warn'});
+                return prev;
+            }
             const used = prev.map(p => p.key);
             const unused = DC_OPTIONS.find(o => !used.includes(o.value));
             const defaultKey = unused ? unused.value : (DC_OPTIONS.find(o => MULTI_ALLOWED.has(o.value))?.value || DC_OPTIONS[0].value);
@@ -299,9 +309,18 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
                 }
                 return prev.map((p, i) => i === idx ? {...p, ...changed} : p);
             });
-        } else {
-            setExtraFields(prev => prev.map((p, i) => i === idx ? {...p, ...changed} : p));
+            return;
         }
+
+        if (Object.prototype.hasOwnProperty.call(changed, 'value')) {
+            const v = changed.value as string | undefined;
+            if (!v || v.trim() === '') {
+                notify({message: 'El valor del campo no puede estar vacío. Eliminá el campo si no lo necesitás.', type: 'warn'});
+                return;
+            }
+        }
+
+        setExtraFields(prev => prev.map((p, i) => i === idx ? {...p, ...changed} : p));
     };
 
     const removeExtraField = (idx: number) => setExtraFields(prev => prev.filter((_, i) => i !== idx));
