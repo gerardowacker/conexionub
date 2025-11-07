@@ -5,7 +5,7 @@ import treeStyles from '@/components/collection-tree/CollectionTree.module.css';
 import {get} from '@/utils/request';
 import {Resource} from '@/types/resources';
 import {useOptionalToast} from '@/components/toast/ToastProvider';
-import { useSession } from '@/context/SessionContext';
+import {useSession} from '@/context/SessionContext';
 
 type DcContributor = { author?: string[]; advisor?: string[] };
 
@@ -77,13 +77,12 @@ function extractSpanishDescription(d: unknown): string {
 
 export default forwardRef(function ResourceForm({initial = null, onSavedAction}: Props, ref) {
     const toastCtx = useOptionalToast();
-    const { token, clientToken } = useSession();
+    const {token, clientToken} = useSession();
     const notify = (opts: { message: string; type?: 'info' | 'error' | 'warn' }) => {
         if (toastCtx && typeof toastCtx.showToast === 'function') {
             toastCtx.showToast({message: opts.message, type: opts.type ?? 'info'});
             return;
         }
-        // fallback console
         console.warn('[notify]', opts.type ?? 'info', opts.message);
     };
 
@@ -107,6 +106,8 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
     const [extraFields, setExtraFields] = useState<{ key: string; value: string }[]>([]);
     const [collectionOptions, setCollectionOptions] = useState<{ id: string; name: string }[]>([]);
     const [, setLoadingCollections] = useState(false);
+
+    const MULTI_ALLOWED = new Set(['dc:contributor.author', 'dc:contributor.advisor', 'dc:subject']);
 
     useEffect(() => {
         async function loadCollections() {
@@ -275,11 +276,34 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
         }
     };
 
-    const addExtraField = () => setExtraFields(prev => [...prev, {key: DC_OPTIONS[0].value, value: ''}]);
+    const addExtraField = () => {
+        setExtraFields(prev => {
+            const used = prev.map(p => p.key);
+            const unused = DC_OPTIONS.find(o => !used.includes(o.value));
+            const defaultKey = unused ? unused.value : (DC_OPTIONS.find(o => MULTI_ALLOWED.has(o.value))?.value || DC_OPTIONS[0].value);
+            return [...prev, {key: defaultKey, value: ''}];
+        });
+    };
+
     const updateExtraField = (idx: number, changed: Partial<{
         key: string;
         value: string
-    }>) => setExtraFields(prev => prev.map((p, i) => i === idx ? {...p, ...changed} : p));
+    }>) => {
+        if (changed.key) {
+            setExtraFields(prev => {
+                const newKey = changed.key as string;
+                const conflict = prev.some((p, i) => i !== idx && p.key === newKey);
+                if (conflict && !MULTI_ALLOWED.has(newKey)) {
+                    notify({message: 'Solo se permite un campo de este tipo', type: 'warn'});
+                    return prev;
+                }
+                return prev.map((p, i) => i === idx ? {...p, ...changed} : p);
+            });
+        } else {
+            setExtraFields(prev => prev.map((p, i) => i === idx ? {...p, ...changed} : p));
+        }
+    };
+
     const removeExtraField = (idx: number) => setExtraFields(prev => prev.filter((_, i) => i !== idx));
 
     return (
@@ -309,7 +333,12 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
                 <div key={idx} style={{display: 'flex', gap: 8, alignItems: 'center'}}>
                     <select value={f.key} onChange={e => updateExtraField(idx, {key: e.target.value})}
                             style={{maxWidth: 320}}>
-                        {DC_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                        {DC_OPTIONS.map(o => {
+                            // deshabilitar opciones que ya están usadas por otro campo, salvo las excepciones
+                            const usedByOthers = extraFields.some((p, i) => i !== idx && p.key === o.value);
+                            const disabled = usedByOthers && !MULTI_ALLOWED.has(o.value);
+                            return <option key={o.value} value={o.value} disabled={disabled}>{o.label}</option>;
+                        })}
                     </select>
                     <input value={f.value} onChange={e => updateExtraField(idx, {value: e.target.value})}
                            placeholder="Valor"/>
