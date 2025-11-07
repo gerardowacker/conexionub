@@ -10,11 +10,11 @@
     --toast-info-bg: var(--muted);
     --toast-info-color: #ffffff;
 
-    --toast-error-bg: rgba(134, 28, 36, 0.06);
-    --toast-error-color: var(--ub-red);
+    --toast-error-bg: var(--ub-red, #861c24);
+    --toast-error-color: var(--text, #fff);
 
-    --toast-warn-bg: rgba(234, 215, 214, 0.07);
-    --toast-warn-color: #6b3f2b;
+    --toast-warn-color: var(--text, #fff);
+    --toast-warn-bg: #6b3f2b;
 }
 
 html, body {

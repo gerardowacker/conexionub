@@ -39,16 +39,16 @@
 }
 
 .toast.info {
-    background: var(--toast-info-bg, rgba(100, 100, 100, 1));
-    color: var(--toast-info-color, #2b0f10);
+    background: var(--toast-info-bg, var(--muted, #475569));
+    color: var(--toast-info-color, #fff);
 }
 
 .toast.error {
-    background: var(--toast-error-bg, rgba(134, 28, 36, 0.06));
-    color: var(--toast-error-color, var(--ub-red, #861c24));
+    background: var(--toast-error-bg, var(--ub-red, #861c24));
+    color: var(--toast-error-color, var(--text, #fff));
 }
 
 .toast.warn {
-    background: var(--toast-warn-bg, rgba(234, 215, 214, 0.07));
-    color: var(--toast-warn-color, #6b3f2b);
+    background: var(--toast-warn-bg, #6b3f2b);
+    color: var(--toast-warn-color, var(--text, #fff));
 }
