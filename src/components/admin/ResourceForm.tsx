@@ -334,7 +334,6 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
                     <select value={f.key} onChange={e => updateExtraField(idx, {key: e.target.value})}
                             style={{maxWidth: 320}}>
                         {DC_OPTIONS.map(o => {
-                            // deshabilitar opciones que ya están usadas por otro campo, salvo las excepciones
                             const usedByOthers = extraFields.some((p, i) => i !== idx && p.key === o.value);
                             const disabled = usedByOthers && !MULTI_ALLOWED.has(o.value);
                             return <option key={o.value} value={o.value} disabled={disabled}>{o.label}</option>;

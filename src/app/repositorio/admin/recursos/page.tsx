@@ -11,6 +11,7 @@ import {ToastProvider} from '@/components/toast/ToastProvider';
 import ResourceList from '@/components/list/ResourceList';
 import styles from './page.module.css';
 import treeStyles from '@/components/collection-tree/CollectionTree.module.css';
+import {notFound} from "next/navigation";
 
 export default function AdminResources() {
     const {user} = useSession();
@@ -117,13 +118,7 @@ export default function AdminResources() {
     }, [selectedCollection, user, loadResources]);
 
     if (!user || user.level < 1) {
-        return (
-            <Container id={'admin-resources'} crumb={[<Link key={'rep'} href={'/repositorio'}>Repositorio</Link>,
-                <Link key={'admin'} href={'/repositorio/admin'}>Admin</Link>]}>
-                <h1>404 — Página no encontrada</h1>
-                <p>No tienes permisos para ver esta sección.</p>
-            </Container>
-        );
+        return notFound()
     }
 
     const baseEndpoint = selectedCollection ? `/collection/${selectedCollection}` : '/resources';
