@@ -22,13 +22,13 @@ interface SessionPayload {
 
 interface CreateCollectionPayload {
     session: SessionPayload;
-    collection: { name: string; description?: string; licence?: string; parent?: string }
+    collection: { name: string; description?: string; licence?: string; parent?: string | null }
 }
 
 interface UpdateCollectionPayload {
     session: SessionPayload;
     id: string;
-    updateData: { name?: string; description?: string; licence?: string; parent?: string }
+    updateData: { name?: string; description?: string; licence?: string; parent?: string | null }
 }
 
 function flatten(collections: Collection[], depth = 0, out: { id: string; name: string }[] = []) {
@@ -121,7 +121,7 @@ export default function CollectionAdminSelector({value, onChangeAction, showCont
             const payload: CreateCollectionPayload = {session, collection: {name: form.name}};
             if (form.description) payload.collection.description = form.description;
             if (form.licence) payload.collection.licence = form.licence;
-            if (form.parent) payload.collection.parent = form.parent;
+            payload.collection.parent = form.parent === '' ? null : form.parent;
             const res = await post('/collection/create', payload);
             if (res.response.status === 200) {
                 notify({message: 'Colección creada', type: 'info'});
@@ -136,7 +136,7 @@ export default function CollectionAdminSelector({value, onChangeAction, showCont
             if (form.name) payload.updateData.name = form.name;
             if (form.description) payload.updateData.description = form.description;
             if (form.licence) payload.updateData.licence = form.licence;
-            if (form.parent) payload.updateData.parent = form.parent;
+            payload.updateData.parent = form.parent === '' ? null : form.parent;
             const res = await post('/collection/update', payload);
             if (res.response.status === 200) {
                 notify({message: 'Colección actualizada', type: 'info'});
