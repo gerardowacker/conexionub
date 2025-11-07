@@ -43,6 +43,8 @@ const DC_OPTIONS: { value: string; label: string }[] = [
     {value: 'dc:rights', label: 'Rights / Licencia (dc:rights)'}
 ];
 
+const FIXED_FIELDS = new Set(['dc:title', 'dc:description', 'dc:creator', 'dc:type']);
+
 function extractSpanishTitle(t: unknown): string {
     if (!t) return '';
     if (typeof t === 'string') return t;
@@ -157,7 +159,7 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
 
         if (initial.dc && extraFields.length === 0) {
             const skipKeys = new Set([
-                'dc:title', 'dc:creator', 'dc:description', 'dc:format', 'dc:subject', 'dc:publisher', 'dc:rights',
+                'dc:title', 'dc:creator', 'dc:description', 'dc:type', 'dc:format', 'dc:subject', 'dc:publisher', 'dc:rights',
             ]);
 
             const foundExtras: { key: string; value: string }[] = [];
@@ -438,6 +440,7 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
                     <select value={f.key} onChange={e => updateExtraField(idx, {key: e.target.value})}
                             style={{maxWidth: 320}}>
                         {DC_OPTIONS.map(o => {
+                            if (FIXED_FIELDS.has(o.value)) return null;
                             const usedByOthers = extraFields.some((p, i) => i !== idx && p.key === o.value);
                             const disabled = usedByOthers && !MULTI_ALLOWED.has(o.value);
                             return <option key={o.value} value={o.value} disabled={disabled}>{o.label}</option>;
