@@ -1,10 +1,11 @@
-'use client';
+"use client";
 
 import React, {useEffect, useState, useRef} from 'react';
 import {get, post} from '@/utils/request';
 import styles from '@/components/collection-tree/CollectionTree.module.css';
 import CollectionTree from '@/components/collection-tree/CollectionTree';
 import {useOptionalToast} from '@/components/toast/ToastProvider';
+import { useSession } from '@/context/SessionContext';
 
 import type {Collection} from '@/types/collections';
 
@@ -58,6 +59,7 @@ export default function CollectionAdminSelector({value, onChangeAction, showCont
     const [mode, setMode] = useState<'create' | 'edit' | null>(null);
     const [editing, setEditing] = useState<Collection | null>(null);
     const [form, setForm] = useState({name: '', description: '', licence: '', parent: ''});
+    const { token, clientToken } = useSession();
 
     async function load() {
         setLoading(true);
@@ -109,14 +111,11 @@ export default function CollectionAdminSelector({value, onChangeAction, showCont
     };
 
     const submit = async () => {
-        const session: SessionPayload = {
-            token: localStorage.getItem('__lorest'),
-            clientToken: localStorage.getItem('__lore_client')
-        };
-        if (!session.token || !session.clientToken) {
+        if (!token || !clientToken) {
             notify({message: 'Falta sesión', type: 'error'});
             return;
         }
+        const session: SessionPayload = { token, clientToken };
 
         if (mode === 'create') {
             const payload: CreateCollectionPayload = {session, collection: {name: form.name}};

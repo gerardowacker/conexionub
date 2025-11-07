@@ -5,6 +5,7 @@ import treeStyles from '@/components/collection-tree/CollectionTree.module.css';
 import {get} from '@/utils/request';
 import {Resource} from '@/types/resources';
 import {useOptionalToast} from '@/components/toast/ToastProvider';
+import { useSession } from '@/context/SessionContext';
 
 type DcContributor = { author?: string[]; advisor?: string[] };
 
@@ -76,6 +77,7 @@ function extractSpanishDescription(d: unknown): string {
 
 export default forwardRef(function ResourceForm({initial = null, onSavedAction}: Props, ref) {
     const toastCtx = useOptionalToast();
+    const { token, clientToken } = useSession();
     const notify = (opts: { message: string; type?: 'info' | 'error' | 'warn' }) => {
         if (toastCtx && typeof toastCtx.showToast === 'function') {
             toastCtx.showToast({message: opts.message, type: opts.type ?? 'info'});
@@ -158,8 +160,6 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
     useImperativeHandle(ref, () => ({submit}));
 
     const submit = async () => {
-        const token = localStorage.getItem('__lorest');
-        const clientToken = localStorage.getItem('__lore_client');
         if (!token || !clientToken) {
             notify({message: 'Falta sesión', type: 'error'});
             return;
