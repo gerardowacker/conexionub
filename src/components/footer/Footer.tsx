@@ -10,7 +10,7 @@ export default async function Footer() {
 
     return (
         <footer className={styles.footer}>
-            <div className={styles.separator} />
+            <div className={styles.separator}/>
             <div className={styles.inner}>
                 <div className={styles.brand}>
                     <div className={styles.brandRow}>
@@ -81,7 +81,7 @@ export default async function Footer() {
                         <h4 className={styles.colTitle}>Contacto</h4>
                         <ul className={styles.list}>
                             <li><Link href="/contacto">Contacto</Link></li>
-                            <li><Link href="/contacto">Ubicación</Link></li>
+                            <li><Link href="/contacto#ubicacion">Ubicación</Link></li>
                         </ul>
                     </div>
 
@@ -91,9 +91,10 @@ export default async function Footer() {
                             <li><Link href="/creditos">Créditos</Link></li>
                             <li><Link href="https://github.com/gerardowacker/conexionub" target="_blank">Código
                                 fuente</Link></li>
-                            <span className={styles.buildTag} title="Build">
+                            <Link href={"https://github.com/gerardowacker/conexionub/commit/" + commit.commitId}
+                                  className={styles.buildTag} title="Versión del sitio">
                                 {commit.commitId} — {commit.environment}
-                            </span>
+                            </Link>
                             <p><strong>{'</>'} Hecho por estudiantes </strong></p>
                             <li className={styles.note}>
                                 © Los logotipos y las siglas UB son propiedad de la Fundación Universidad de Belgrano

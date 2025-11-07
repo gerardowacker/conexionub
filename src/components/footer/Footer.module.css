@@ -102,21 +102,6 @@
     padding-bottom: 2px;
 }
 
-.list a::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: -2px;
-    width: 0;
-    height: 2px;
-    background: currentColor;
-    transition: width .22s ease;
-}
-
-.list a:hover::after {
-    width: 100%;
-}
-
 .note {
     font-size: .88rem;
     line-height: 1.25rem;
