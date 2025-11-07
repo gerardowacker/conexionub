@@ -241,7 +241,7 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
                         if (onSavedAction) onSavedAction(data as Record<string, unknown>);
                     } else notify({message: 'Error: ' + JSON.stringify(data), type: 'error'});
                 } else {
-                    const body = {session: {token, clientToken}, id: initial._id, updateData: {metadata}};
+                    const body = {session: {token, clientToken}, id: initial._id, metadata};
                     const res = await fetch(host + '/resource/update', {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
