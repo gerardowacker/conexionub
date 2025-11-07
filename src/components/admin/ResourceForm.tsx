@@ -78,6 +78,55 @@ function extractSpanishDescription(d: unknown): string {
 }
 
 const MULTI_ALLOWED = new Set(['dc:contributor.author', 'dc:contributor.advisor', 'dc:subject']);
+const DATE_KEYS = new Set(['dc:date.issued', 'dc:date.available']);
+
+function toInputDateString(v: unknown): string | null {
+    if (v == null) return null;
+    if (typeof v === 'string') {
+        const d = new Date(v);
+        if (!isNaN(d.getTime())) {
+            const yyyy = d.getUTCFullYear();
+            const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
+            const dd = String(d.getUTCDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        }
+        if (/^\d{4}-\d{2}-\d{2}$/.test(v)) return v;
+        return null;
+    }
+    if (typeof v === 'number') {
+        const d = new Date(v);
+        if (!isNaN(d.getTime())) return toInputDateString(d.toISOString());
+        return null;
+    }
+    if (v instanceof Date) {
+        if (!isNaN(v.getTime())) return toInputDateString(v.toISOString());
+        return null;
+    }
+    if (Array.isArray(v)) {
+        for (const x of v) {
+            const s = toInputDateString(x);
+            if (s) return s;
+        }
+        return null;
+    }
+    if (typeof v === 'object') {
+        const obj = v as Record<string, unknown>;
+        const maybe = obj.value ?? obj['@value'] ?? obj.date ?? null;
+        return toInputDateString(maybe);
+    }
+    return null;
+}
+
+function inputDateToIso(dateStr: string): string | null {
+    if (!dateStr) return null;
+    const m = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (!m) return null;
+    const y = Number(m[1]);
+    const mo = Number(m[2]) - 1;
+    const d = Number(m[3]);
+    const dt = new Date(Date.UTC(y, mo, d));
+    return dt.toISOString();
+}
 
 export default forwardRef(function ResourceForm({initial = null, onSavedAction}: Props, ref) {
     const toastCtx = useOptionalToast();
@@ -220,19 +269,29 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
                     if (MULTI_ALLOWED.has(key)) {
                         arr.forEach((v) => {
                             const val = extractValue(v);
-                            if (val != null) foundExtras.push({key, value: val});
+                            if (val != null) {
+                                const out = DATE_KEYS.has(key) ? toInputDateString(val) : val;
+                                if (out != null) foundExtras.push({key, value: out});
+                            }
                         });
                     } else {
                         const mapped = arr.map((v) => extractValue(v));
                         const filtered = mapped.filter((x): x is string => x != null);
                         const val = filtered.length ? filtered[0] : null;
-                        if (val != null) foundExtras.push({key, value: val});
+                        if (val != null) {
+                            const out = DATE_KEYS.has(key) ? toInputDateString(val) : val;
+                            if (out != null) foundExtras.push({key, value: out});
+                        }
                     }
                 } else if (typeof cur === 'object') {
                     const val = extractValue(cur);
-                    if (val != null) foundExtras.push({key, value: val});
+                    if (val != null) {
+                        const out = DATE_KEYS.has(key) ? toInputDateString(val) : val;
+                        if (out != null) foundExtras.push({key, value: out});
+                    }
                 } else {
-                    foundExtras.push({key, value: String(cur)});
+                    const out = DATE_KEYS.has(key) ? toInputDateString(cur) : String(cur);
+                    if (out != null) foundExtras.push({key, value: out});
                 }
             });
 
@@ -255,6 +314,19 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
         }
 
         const dcCopy = {...dc} as Record<string, unknown>;
+
+        if (dcCopy.date && typeof dcCopy.date === 'object') {
+            const dateObj = dcCopy.date as Record<string, unknown>;
+            ['issued', 'available'].forEach(k => {
+                const v = dateObj[k];
+                if (Array.isArray(v) && v.length) {
+                    dateObj[k] = v[0];
+                } else if (v && typeof v === 'object') {
+                    const maybe = (v as Record<string, unknown>).value ?? (v as Record<string, unknown>)['@value'] ?? (v as Record<string, unknown>)['date'] ?? null;
+                    if (maybe != null) dateObj[k] = maybe;
+                }
+            });
+        }
 
         const titleVal = dcCopy['title'];
         if (titleVal) {
@@ -288,24 +360,56 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
             return;
         }
 
+        const multiMap = new Map<string, string[]>();
+        const singles: { key: string; value: string }[] = [];
         for (const f of extraFields) {
+            if (MULTI_ALLOWED.has(f.key)) {
+                const arr = multiMap.get(f.key) ?? [];
+                arr.push(f.value);
+                multiMap.set(f.key, arr);
+            } else {
+                singles.push(f);
+            }
+        }
+
+        for (const f of singles) {
             const k = f.key;
             const v = f.value;
-            if (k.startsWith('dc:')) {
-                const path = k.slice(3).split('.');
-                let cur: Record<string, unknown> = dcCopy;
-                for (let i = 0; i < path.length - 1; i++) {
-                    const p = path[i];
-                    const next = (cur as Record<string, unknown>)[p];
-                    if (!next || typeof next !== 'object') (cur as Record<string, unknown>)[p] = {};
-                    cur = (cur as Record<string, unknown>)[p] as Record<string, unknown>;
-                }
-                const last = path[path.length - 1];
-                const lastVal = (cur as Record<string, unknown>)[last];
-                if (Array.isArray(lastVal)) (lastVal as unknown[]).push(v);
-                else if (lastVal && typeof lastVal === 'string') (cur as Record<string, unknown>)[last] = [lastVal, v];
-                else (cur as Record<string, unknown>)[last] = v;
+            if (!k.startsWith('dc:')) continue;
+            const path = k.slice(3).split('.');
+            let cur: Record<string, unknown> = dcCopy;
+            for (let i = 0; i < path.length - 1; i++) {
+                const p = path[i];
+                const next = (cur as Record<string, unknown>)[p];
+                if (!next || typeof next !== 'object') (cur as Record<string, unknown>)[p] = {};
+                cur = (cur as Record<string, unknown>)[p] as Record<string, unknown>;
             }
+            const last = path[path.length - 1];
+            (cur as Record<string, unknown>)[last] = DATE_KEYS.has(k) ? (inputDateToIso(String(v)) ?? v) : v;
+        }
+
+        for (const [key, values] of multiMap.entries()) {
+            if (!key.startsWith('dc:')) continue;
+            const path = key.slice(3).split('.');
+            let cur: Record<string, unknown> = dcCopy;
+            for (let i = 0; i < path.length - 1; i++) {
+                const p = path[i];
+                const next = (cur as Record<string, unknown>)[p];
+                if (!next || typeof next !== 'object') (cur as Record<string, unknown>)[p] = {};
+                cur = (cur as Record<string, unknown>)[p] as Record<string, unknown>;
+            }
+            const last = path[path.length - 1];
+            const mapped = values.map(v => DATE_KEYS.has(key) ? (inputDateToIso(String(v)) ?? v) : v);
+            const seen = new Set<string>();
+            const unique: string[] = [];
+            for (const it of mapped) {
+                const s = String(it);
+                if (!seen.has(s)) {
+                    seen.add(s);
+                    unique.push(s);
+                }
+            }
+            (cur as Record<string, unknown>)[last] = unique;
         }
 
         const metadata = {
@@ -446,8 +550,12 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
                             return <option key={o.value} value={o.value} disabled={disabled}>{o.label}</option>;
                         })}
                     </select>
-                    <input value={f.value} onChange={e => updateExtraField(idx, {value: e.target.value})}
-                           placeholder="Valor"/>
+                    {DATE_KEYS.has(f.key) ? (
+                        <input type="date" value={f.value} onChange={e => updateExtraField(idx, {value: e.target.value})} />
+                    ) : (
+                        <input value={f.value} onChange={e => updateExtraField(idx, {value: e.target.value})}
+                               placeholder="Valor"/>
+                    )}
                     <button type="button" className={treeStyles['toggle-btn']}
                             onClick={() => removeExtraField(idx)}>Eliminar
                     </button>
