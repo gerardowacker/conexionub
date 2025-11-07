@@ -100,7 +100,9 @@
     max-width: calc(100% - 48px);
     box-shadow: 0 12px 40px rgba(20, 20, 30, 0.15);
     border: 1px solid rgba(0, 0, 0, 0.06);
-    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 48px);
 }
 
 .modalHeader {
@@ -114,8 +116,11 @@
 
 .modalBody {
     padding: 16px;
-    display: grid;
-    gap: 12px;
+    display: block;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .modalFooter {
@@ -182,6 +187,7 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
+    max-height: none;
 }
 
 .dialogForm label {
