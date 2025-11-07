@@ -85,7 +85,6 @@ export function SessionProvider({children}: { children: ReactNode }) {
     const localLogout = () => {
         localStorage.removeItem("__lorest");
         localStorage.removeItem("__lore_client");
-        window.location.reload();
         setToken(null);
         setClientToken(null);
         setUser(null);

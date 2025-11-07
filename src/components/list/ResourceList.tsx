@@ -12,6 +12,7 @@ type Props = {
     initialLastResource?: string | null
     baseEndpoint: string
     initialQuery?: string
+    onSelectAction?: (resource: Resource) => void
 }
 
 export default function ResourceList({
@@ -20,6 +21,7 @@ export default function ResourceList({
                                           initialLastResource = null,
                                           baseEndpoint,
                                           initialQuery = '',
+                                          onSelectAction,
                                       }: Props) {
     const [resources, setResources] = useState<Resource[]>(initialResources)
     const [hasMore, setHasMore] = useState<boolean>(initialHasMore)
@@ -65,7 +67,7 @@ export default function ResourceList({
         <div>
             {resources.length === 0 && <p>No hay recursos.</p>}
             {resources.map(r => (
-                <ResourceCard key={r._id} resource={r}/>
+                <ResourceCard key={r._id} resource={r} onSelectAction={onSelectAction} />
             ))}
 
             {error && <p style={{color: 'var(--error, #b00020)'}}>{error}</p>}

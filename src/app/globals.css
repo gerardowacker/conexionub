@@ -6,6 +6,15 @@
     --bg-darker: #ead7d6;
     --ring: #6e161d;
     --radius: 16px;
+
+    --toast-info-bg: var(--muted);
+    --toast-info-color: #ffffff;
+
+    --toast-error-bg: var(--ub-red, #861c24);
+    --toast-error-color: var(--text, #fff);
+
+    --toast-warn-color: var(--text, #fff);
+    --toast-warn-bg: #6b3f2b;
 }
 
 html, body {
@@ -51,4 +60,3 @@ body {
     margin: 0 auto 64px;
     padding: 0;
 }
-

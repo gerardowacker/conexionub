@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, {AxiosError, AxiosResponse} from 'axios'
 
 const host = process.env.NEXT_PUBLIC_LORE_HOST
@@ -11,9 +12,9 @@ interface ApiResponse {
     };
 }
 
-export const post = async (
+export const post = async <T = any>(
     endpoint: string,
-    body: Record<string, string | number | boolean | undefined | null>,
+    body: T | FormData,
 ): Promise<ApiResponse> => {
     console.log(endpoint, body)
     try {
@@ -31,8 +32,17 @@ export const post = async (
                 localStorage.setItem('__lorest', successfulRes.token)
                 localStorage.setItem('__lore_client', successfulRes.clientToken)
 
+                if (body instanceof FormData) {
+                    const fd = new FormData();
+                    // copy existing FormData
+                    for (const [k, v] of body.entries()) fd.append(k, v as any);
+                    fd.set('token', successfulRes.token);
+                    fd.set('clientToken', successfulRes.clientToken);
+                    return await post(endpoint, fd)
+                }
+
                 return await post(endpoint, {
-                    ...body,
+                    ...(body as Record<string, any>),
                     token: successfulRes.token,
                     clientToken: successfulRes.clientToken,
                 })

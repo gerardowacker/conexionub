@@ -7,9 +7,10 @@ import {Resource} from '@/types/resources'
 
 type Props = {
     resource: Resource
+    onSelectAction?: (resource: Resource) => void
 }
 
-export default function ResourceCard({resource}: Props) {
+export default function ResourceCard({resource, onSelectAction}: Props) {
     const id = resource._id
     const dc = resource.dc
 
@@ -33,6 +34,24 @@ export default function ResourceCard({resource}: Props) {
 
     if (!title) title = id
     if (!description) description = 'Sin descripción disponible.'
+
+    const handleClick = (e: React.MouseEvent) => {
+        if (onSelectAction) {
+            e.preventDefault()
+            onSelectAction(resource)
+        }
+    }
+
+    // si se pasa onSelect, no navegamos y disparamos el callback; si no, mantenemos el Link
+    if (onSelectAction) {
+        return (
+            <a className={styles['resource']} onClick={handleClick} href="#">
+                <h2 className={styles['resource-title']}>{title}</h2>
+                <p className={styles['resource-author']}>{author}{year ? `  (${year})` : ''}</p>
+                <p className={styles['resource-description']}>{description}</p>
+            </a>
+        )
+    }
 
     return (
         <Link href={`/repositorio/recurso/${id}`} className={styles['resource']}>
