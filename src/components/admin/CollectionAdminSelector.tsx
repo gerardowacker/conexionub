@@ -1,7 +1,8 @@
 "use client";
 
 import React, {useEffect, useState, useRef} from 'react';
-import {get, post} from '@/utils/request';
+import {post} from '@/utils/request';
+import useCollections from '@/hooks/useCollections';
 import styles from '@/components/collection-tree/CollectionTree.module.css';
 import CollectionTree from '@/components/collection-tree/CollectionTree';
 import {useOptionalToast} from '@/components/toast/ToastProvider';
@@ -13,6 +14,7 @@ type Props = {
     value?: string | null;
     onChangeAction?: (id: string | null) => void;
     showControls?: boolean;
+    externalCollections?: Collection[];
 };
 
 interface SessionPayload {
@@ -28,7 +30,7 @@ interface CreateCollectionPayload {
 interface UpdateCollectionPayload {
     session: SessionPayload;
     id: string;
-    updateData: { name?: string; description?: string; licence?: string; parent?: string | null }
+    updateData: { name?: string; description?: string; licence?: string | null; parent?: string | null }
 }
 
 function flatten(collections: Collection[], depth = 0, out: { id: string; name: string }[] = []) {
@@ -39,7 +41,7 @@ function flatten(collections: Collection[], depth = 0, out: { id: string; name: 
     return out;
 }
 
-export default function CollectionAdminSelector({value, onChangeAction, showControls = true}: Props) {
+export default function CollectionAdminSelector({value, onChangeAction, showControls = true, externalCollections}: Props) {
     const [collections, setCollections] = useState<Collection[]>([]);
     const [loading, setLoading] = useState(false);
     const [selected, setSelected] = useState<string | null>(value ?? null);
@@ -62,16 +64,30 @@ export default function CollectionAdminSelector({value, onChangeAction, showCont
     const {token, clientToken} = useSession();
 
     async function load() {
-        setLoading(true);
-        const res = await get('/collections');
-        const cols = Array.isArray(res.response.data) ? res.response.data : [];
-        setCollections(cols);
-        setLoading(false);
+        // Si usamos useCollections, no necesitamos ejecutar get aquí. La función de reload() del hook
+        // se encargará de refrescar la caché.
+        return;
     }
 
+    const { collections: hookCollections, reload: reloadCollections } = useCollections();
+
     useEffect(() => {
-        load();
-    }, []);
+        // Si recibimos las colecciones desde afuera (p. ej. la página), úsalas y no hagas la petición
+        if (typeof externalCollections !== 'undefined') {
+            // externalCollections puede ser un array vacío mientras la página lo carga; igualmente lo usamos para evitar peticiones duplicadas
+            setCollections(Array.isArray(externalCollections) ? externalCollections : []);
+            return;
+        }
+
+        // Si no hay colecciones externas, usar el hook `useCollections` para obtenerlas (el hook internamente hace la petición una sola vez)
+        if (Array.isArray(hookCollections) && hookCollections.length) setCollections(hookCollections);
+        else setCollections([]);
+    }, [externalCollections]);
+
+    useEffect(() => {
+        // Mantener sincronizado el estado local cuando hookCollections cambie y no se hayan pasado externalCollections
+        if (typeof externalCollections === 'undefined') setCollections(hookCollections ?? []);
+    }, [hookCollections, externalCollections]);
 
     useEffect(() => {
         const newVal = value ?? null;
@@ -126,7 +142,8 @@ export default function CollectionAdminSelector({value, onChangeAction, showCont
             if (res.response.status === 200) {
                 notify({message: 'Colección creada', type: 'info'});
                 setMode(null);
-                await load();
+                // refrescar caché central
+                if (typeof reloadCollections === 'function') await reloadCollections();
             } else notify({
                 message: 'Error: ' + JSON.stringify(res.response.data || res.response.status),
                 type: 'error'
@@ -141,7 +158,7 @@ export default function CollectionAdminSelector({value, onChangeAction, showCont
             if (res.response.status === 200) {
                 notify({message: 'Colección actualizada', type: 'info'});
                 setMode(null);
-                await load();
+                if (typeof reloadCollections === 'function') await reloadCollections();
             } else notify({
                 message: 'Error: ' + JSON.stringify(res.response.data || res.response.status),
                 type: 'error'
@@ -154,6 +171,24 @@ export default function CollectionAdminSelector({value, onChangeAction, showCont
         openEditFor(col);
     };
 
+    // Si el consumidor pide que no haya controles, devolvemos solo el select estilizado
+    if (!showControls) {
+        return (
+            <label>
+                <select className={styles['treeSelect']} value={selected ?? ''}
+                        onChange={e => {
+                            const val = e.target.value || null;
+                            setSelected(val);
+                            if (onChangeAction && !skipNotifyRef.current) onChangeAction(val);
+                            skipNotifyRef.current = false;
+                        }}>
+                    <option value="">Ninguno</option>
+                    {options.map(o => <option key={o.id} value={o.id}>{o.name}</option>)}
+                </select>
+            </label>
+        );
+    }
+
     return (
         <div>
             {showControls ? (
@@ -165,33 +200,20 @@ export default function CollectionAdminSelector({value, onChangeAction, showCont
                     header={<button className={styles.createBtn} onClick={openCreate}>Crear colección</button>}
                 />
             ) : (
-                <div className={styles.treeContainer}>
-                    <div style={{display: 'flex', gap: 8, alignItems: 'center'}}>
-                        <select value={selected ?? ''} onChange={e => {
-                            const v = e.target.value || null;
-                            setSelected(v);
-                            if (skipNotifyRef.current) {
-                                skipNotifyRef.current = false;
-                                return;
-                            }
-                            if (onChangeAction) onChangeAction(v);
-                        }} style={{flex: 1}}>
-                            <option value={''}>Ninguno</option>
-                            {options.map(o => <option key={o.id} value={o.id}>{o.name}</option>)}
-                        </select>
-                        <div style={{display: 'flex', gap: 8}}>
-                            <button type="button" onClick={openCreate} className={styles['toggle-btn']}>Crear</button>
-                            <button type="button" onClick={() => {
-                                if (!selected) {
-                                    notify({message: 'Seleccioná una colección para editar', type: 'warn'});
-                                    return;
-                                }
-                                openEditFor(collections.find(c => c._id === selected) as Collection);
-                            }} className={styles['toggle-btn']}>Editar
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <>
+                    <select className={styles.treeSelect} value={selected ?? ''} onChange={e => {
+                        const v = e.target.value || null;
+                        setSelected(v);
+                        if (skipNotifyRef.current) {
+                            skipNotifyRef.current = false;
+                            return;
+                        }
+                        if (onChangeAction) onChangeAction(v);
+                    }}>
+                        <option value={''}>Seleccionar una colección</option>
+                        {options.map(o => <option key={o.id} value={o.id}>{o.name}</option>)}
+                    </select>
+                </>
             )}
 
             {mode && (

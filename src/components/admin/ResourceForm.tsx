@@ -2,7 +2,7 @@
 
 import React, {useEffect, useState, forwardRef, useImperativeHandle} from 'react';
 import treeStyles from '@/components/collection-tree/CollectionTree.module.css';
-import {get} from '@/utils/request';
+import useCollections from '@/hooks/useCollections';
 import {Resource} from '@/types/resources';
 import {useOptionalToast} from '@/components/toast/ToastProvider';
 import {useSession} from '@/context/SessionContext';
@@ -157,37 +157,22 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
     const [, setLoading] = useState(false);
 
     const [extraFields, setExtraFields] = useState<{ key: string; value: string }[]>([]);
+    const { collections: hookCollections } = useCollections();
     const [collectionOptions, setCollectionOptions] = useState<{ id: string; name: string }[]>([]);
-    const [, setLoadingCollections] = useState(false);
 
     useEffect(() => {
-        async function loadCollections() {
-            setLoadingCollections(true);
-            try {
-                const res = await get('/collections');
-                const cols = Array.isArray(res.response.data) ? res.response.data as unknown[] : [];
-                const opts: { id: string; name: string }[] = [];
-
-                type Col = { _id: string; name: string; children?: Col[] };
-
-                function flatten(list: Col[], depth = 0) {
-                    list.forEach((c: Col) => {
-                        opts.push({id: c._id, name: `${'- '.repeat(depth)}${c.name}`});
-                        if (c.children && c.children.length) flatten(c.children, depth + 1);
-                    });
-                }
-
-                flatten(cols as Col[]);
-                setCollectionOptions(opts);
-            } catch (err) {
-                console.error('Error cargando colecciones', err);
-            } finally {
-                setLoadingCollections(false);
-            }
+        const opts: { id: string; name: string }[] = [];
+        type Col = { _id: string; name: string; children?: Col[] };
+        function flatten(list: Col[], depth = 0) {
+            list.forEach((c: Col) => {
+                opts.push({id: c._id, name: `${'- '.repeat(depth)}${c.name}`});
+                if (c.children && c.children.length) flatten(c.children, depth + 1);
+            });
         }
 
-        loadCollections();
-    }, []);
+        if (Array.isArray(hookCollections) && hookCollections.length) flatten(hookCollections as Col[]);
+        setCollectionOptions(opts);
+    }, [hookCollections]);
 
     useEffect(() => {
         if (!initial) return;
