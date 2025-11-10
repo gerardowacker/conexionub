@@ -1,0 +1,30 @@
+.title {
+    margin-top: 0;
+}
+
+.box {
+    margin-top: 20px;
+    padding: 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.boxHeader {
+    margin: 0 0 12px 0;
+    font-size: 1rem;
+    color: #333;
+}
+
+.pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;
+    font-size: 0.9rem;
+    background: #f7f7f7;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #eee;
+    margin-bottom: 0;
+}

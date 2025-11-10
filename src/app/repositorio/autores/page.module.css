@@ -1,0 +1,49 @@
+.title {
+    margin-top: 0;
+}
+
+.list {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.author-card {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: 0 2px 8px rgba(134, 28, 36, 0.06);
+    padding: 1rem;
+    transition: transform .12s ease, box-shadow .12s ease;
+    border: 1px solid rgba(0,0,0,0.04);
+}
+
+.author-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(134, 28, 36, 0.08);
+}
+
+.author-name {
+    margin: 0 0 0.25rem 0;
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+.author-name a {
+    color: var(--ub-red);
+    text-decoration: none;
+}
+
+.author-name a:hover {
+    text-decoration: underline;
+}
+
+.author-bio {
+    margin: 0;
+    color: #444;
+    font-size: 0.95rem;
+}
+
+.empty {
+    color: #666;
+}
+
