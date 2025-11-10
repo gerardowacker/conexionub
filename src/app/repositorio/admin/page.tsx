@@ -11,7 +11,7 @@ import {get} from '@/utils/request'
 
 export default function AdminIndex() {
     const {user} = useSession();
-    const [data, setData] = useState<{name?: string; version?: string; homepage?: string; motd?: string} | null>(null)
+    const [data, setData] = useState<{ name?: string; version?: string; homepage?: string; motd?: string } | null>(null)
     const [loading, setLoading] = useState<boolean>(false)
     const [error, setError] = useState<string | null>(null)
 
@@ -37,12 +37,16 @@ export default function AdminIndex() {
             }
         }
         fetchRoot()
-        return () => { mounted = false }
+        return () => {
+            mounted = false
+        }
     }, [])
 
     if (!user || user.level < 1) {
         return notFound()
     }
+
+    const host = process.env.NEXT_PUBLIC_LORE_HOST ?? 'http://localhost';
 
     return (
         <Container id={'admin'} crumb={[<Link key={'rep'} href={'/repositorio'}>Repositorio</Link>,
@@ -62,7 +66,7 @@ export default function AdminIndex() {
                                     </a>
                                 ) : (
                                     <span>{data.name ?? '—'} {data.version ?? ''}</span>
-                                )}</p>
+                                )} en <a href={host}>{host.split('//')[1]}</a></p>
 
                                 <details style={{marginTop: 8}}>
                                     <summary>Ver respuesta completa</summary>
