@@ -36,7 +36,7 @@ export default function LoginPage() {
     const password = (formData.get('password') as string)?.trim();
 
     if (!email || !password) {
-      setError('Debes ingresar un correo y una contraseña.');
+      setError('Debés ingresar un correo y una contraseña.');
       return;
     }
 
@@ -51,7 +51,7 @@ export default function LoginPage() {
   };
 
   return (
-    <Container id="login" crumb={["Inicio",<Link key="login" href="iniciar-sesion">Iniciar sesión</Link>]}>
+    <Container id="login" crumb={["Inicio",<Link key="login" href="/repositorio/iniciar-sesion">Iniciar sesión</Link>]}>
       <div className={styles.card}>
         <h3 className={styles.heading}>Iniciar sesión</h3>
 

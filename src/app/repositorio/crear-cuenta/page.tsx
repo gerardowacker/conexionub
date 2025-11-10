@@ -33,7 +33,7 @@ export default function RegisterPage() {
         const confirm = (fd.get('confirm') as string)?.trim();
 
 
-        if (!displayName || !email || !password || !confirm) return setError('Completa todos los campos.');
+        if (!displayName || !email || !password || !confirm) return setError('Completá todos los campos.');
         if (password !== confirm) return setError('Las contraseñas no coinciden.');
         if (password.length < 8) return setError('La contraseña debe tener al menos 8 caracteres.');
 
