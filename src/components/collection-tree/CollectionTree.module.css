@@ -212,6 +212,29 @@
     margin-top: .5rem;
 }
 
+.treeSelect {
+    width: 100%;
+    border-radius: 12px;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    background: #f4f4f4;
+    font-size: 1rem;
+    font-family: inherit;
+    height: 44px;
+    box-sizing: border-box;
+}
+
+.inlineCreateBtn {
+    margin-bottom: 0;
+    height: 44px;
+    padding: 8px 12px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+}
+
 .dialogForm input {
     height: 44px;
 }
