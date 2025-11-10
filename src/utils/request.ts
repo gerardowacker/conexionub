@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import axios, {AxiosError, AxiosResponse} from 'axios'
+import axios, {AxiosError} from 'axios'
 
 const host = process.env.NEXT_PUBLIC_LORE_HOST
 
@@ -34,14 +34,13 @@ export const post = async <B = any, R = any>(
 
                 if (body instanceof FormData) {
                     const fd = new FormData();
-                    // copy existing FormData
                     for (const [k, v] of body.entries()) fd.append(k, v as any);
-                    fd.set('token', successfulRes.token);
-                    fd.set('clientToken', successfulRes.clientToken);
+                    fd.append('token', successfulRes.token);
+                    fd.append('clientToken', successfulRes.clientToken);
                     return await post<B, R>(endpoint, fd)
                 }
 
-                return await post<B, R>(endpoint, {
+                return await post<Record<string, any>, R>(endpoint, {
                     ...(body as Record<string, any>),
                     token: successfulRes.token,
                     clientToken: successfulRes.clientToken,
