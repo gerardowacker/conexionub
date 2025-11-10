@@ -16,7 +16,7 @@ type CollectionNode = {
 
 export default async function Collection({params, searchParams}: {
     params: { slug: string },
-    searchParams: { [key: string]: string | string[] | undefined }
+    searchParams: Record<string, string | string[] | undefined>
 }) {
     const slug = params.slug
 
@@ -52,33 +52,40 @@ export default async function Collection({params, searchParams}: {
 
     return (
         <>
-            <form method="get" className={styles['filters']} style={{marginBottom: '1rem'}}>
-                <label style={{marginRight: '0.5rem'}}>
-                    Tamaño:
-                    <select name="pageSize" defaultValue={pageSize} style={{marginLeft: '0.25rem'}}>
-                        <option value="5">5</option>
-                        <option value="10">10</option>
-                        <option value="20">20</option>
-                        <option value="50">50</option>
-                    </select>
-                </label>
-
-                <label style={{marginRight: '0.5rem'}}>
-                    Orden:
-                    <select name="desc" defaultValue={desc} style={{marginLeft: '0.25rem'}}>
-                        <option value="true">Descendente</option>
-                        <option value="false">Ascendente</option>
-                    </select>
-                </label>
-
-                <button type="submit" style={{marginLeft: '0.5rem'}}>Aplicar</button>
-            </form>
 
             <Container id={"subcollections"}
                        crumb={[<Link key={'repositorio'} href={"/repositorio"}>Repositorio</Link>,
                            <Link key={'cols'} href={'/repositorio/colecciones'}>Colecciones</Link>,
                            <Link key={'col'} href={'#col'}>{tree?.name ?? 'Colección'}</Link>]}
             >
+
+                {/* Filtros: ahora dentro del contenedor y con clases para estilizar */}
+                <div className={styles['filtersBox']}>
+                    <form method="get" className={styles['filters']}>
+                        <div className={styles['field']}>
+                            <label className={styles['label']}>Tamaño</label>
+                            <select name="pageSize" defaultValue={pageSize} className={styles['select']}>
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                            </select>
+                        </div>
+
+                        <div className={styles['field']}>
+                            <label className={styles['label']}>Orden</label>
+                            <select name="desc" defaultValue={desc} className={styles['select']}>
+                                <option value="true">Descendente</option>
+                                <option value="false">Ascendente</option>
+                            </select>
+                        </div>
+
+                        <div className={styles['fieldButton']}>
+                            <button type="submit" className={styles['applyBtn']}>Aplicar</button>
+                        </div>
+                    </form>
+                </div>
+
                 <h1 className={styles['collection-box-title']}>{tree?.name ?? 'Colección'}</h1>
                 {tree?.description && <p className={styles['collection-description']}>{tree.description}</p>}
 
