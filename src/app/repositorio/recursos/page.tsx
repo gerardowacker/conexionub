@@ -5,6 +5,7 @@ import {get} from "@/utils/request";
 
 import styles from '../page.module.css';
 import ResourcesList from './resourcelist';
+import {Resource} from "@/types/resources";
 
 interface Props {
     searchParams?: { [key: string]: string | string[] | undefined };
