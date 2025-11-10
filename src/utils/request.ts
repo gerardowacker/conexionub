@@ -8,7 +8,7 @@ type Token = { token: string, clientToken: string }
 interface ApiResponse {
     response: {
         status: number;
-        data: AxiosResponse['data'] ;
+        data: AxiosResponse['data'];
     };
 }
 

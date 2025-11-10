@@ -5,7 +5,7 @@ import {get, post} from '@/utils/request';
 import styles from '@/components/collection-tree/CollectionTree.module.css';
 import CollectionTree from '@/components/collection-tree/CollectionTree';
 import {useOptionalToast} from '@/components/toast/ToastProvider';
-import { useSession } from '@/context/SessionContext';
+import {useSession} from '@/context/SessionContext';
 
 import type {Collection} from '@/types/collections';
 
@@ -59,7 +59,7 @@ export default function CollectionAdminSelector({value, onChangeAction, showCont
     const [mode, setMode] = useState<'create' | 'edit' | null>(null);
     const [editing, setEditing] = useState<Collection | null>(null);
     const [form, setForm] = useState({name: '', description: '', licence: '', parent: ''});
-    const { token, clientToken } = useSession();
+    const {token, clientToken} = useSession();
 
     async function load() {
         setLoading(true);
@@ -115,7 +115,7 @@ export default function CollectionAdminSelector({value, onChangeAction, showCont
             notify({message: 'Falta sesión', type: 'error'});
             return;
         }
-        const session: SessionPayload = { token, clientToken };
+        const session: SessionPayload = {token, clientToken};
 
         if (mode === 'create') {
             const payload: CreateCollectionPayload = {session, collection: {name: form.name}};
