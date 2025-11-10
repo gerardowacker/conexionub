@@ -93,7 +93,7 @@ export default function AdminResources() {
 
             function flatten(list: Col[], depth = 0) {
                 list.forEach((c: Col) => {
-                    opts.push({id: c._id, name: `${'- '.repeat(depth)}${c.name}`});
+                    opts.push({id: c._id, name: `${'\u2014 '.repeat(depth)}${c.name}`});
                     if (c.children && c.children.length) flatten(c.children, depth + 1);
                 });
             }
