@@ -5,21 +5,21 @@ const host = process.env.NEXT_PUBLIC_LORE_HOST
 
 type Token = { token: string, clientToken: string }
 
-interface ApiResponse {
+interface ApiResponse<T = any> {
     response: {
         status: number;
-        data: AxiosResponse['data'];
+        data: T;
     };
 }
 
-export const post = async <T = any>(
+export const post = async <B = any, R = any>(
     endpoint: string,
-    body: T | FormData,
-): Promise<ApiResponse> => {
+    body: B | FormData,
+): Promise<ApiResponse<R>> => {
     console.log(endpoint, body)
     try {
         const response = await axios.post(host + endpoint, body)
-        return {response: {status: response.status, data: response.data}}
+        return {response: {status: response.status, data: response.data as R}}
     } catch (e) {
         if (e instanceof AxiosError && e.response?.status === 513) {
             const res = await post('/session/refresh', {
@@ -38,10 +38,10 @@ export const post = async <T = any>(
                     for (const [k, v] of body.entries()) fd.append(k, v as any);
                     fd.set('token', successfulRes.token);
                     fd.set('clientToken', successfulRes.clientToken);
-                    return await post(endpoint, fd)
+                    return await post<B, R>(endpoint, fd)
                 }
 
-                return await post(endpoint, {
+                return await post<B, R>(endpoint, {
                     ...(body as Record<string, any>),
                     token: successfulRes.token,
                     clientToken: successfulRes.clientToken,
@@ -50,21 +50,21 @@ export const post = async <T = any>(
                 localStorage.removeItem('__lorest')
                 localStorage.removeItem('__lore_client')
                 console.log('Nah bruh')
-                return {response: {status: e.response.status, data: e.response.data}}
+                return {response: {status: e.response.status, data: e.response.data as R}}
             }
         } else if (e instanceof AxiosError)
-            return {response: {status: e.response?.status || 500, data: e.response?.data || {}}}
-        else return {response: {status: 500, data: 'Unknown error'}}
+            return {response: {status: e.response?.status || 500, data: (e.response?.data as R) || ({} as R)}}
+        else return {response: {status: 500, data: 'Unknown error' as unknown as R}}
     }
 }
 
-export const get = async (endpoint: string): Promise<ApiResponse> => {
+export const get = async <R = any>(endpoint: string): Promise<ApiResponse<R>> => {
     try {
         const response = await axios.get(host + endpoint)
-        return {response: {status: response.status, data: response.data}}
+        return {response: {status: response.status, data: response.data as R}}
     } catch (e: unknown) {
         if (e instanceof AxiosError)
-            return {response: {status: e.response?.status || 500, data: e.response?.data}}
-        else return {response: {status: 500, data: 'Unknown error'}}
+            return {response: {status: e.response?.status || 500, data: e.response?.data as R}}
+        else return {response: {status: 500, data: 'Unknown error' as unknown as R}}
     }
 }
