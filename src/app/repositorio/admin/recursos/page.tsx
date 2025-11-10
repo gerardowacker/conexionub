@@ -12,6 +12,7 @@ import ResourceList from '@/components/list/ResourceList';
 import styles from './page.module.css';
 import treeStyles from '@/components/collection-tree/CollectionTree.module.css';
 import {notFound} from "next/navigation";
+import useCollections from '@/hooks/useCollections';
 
 export default function AdminResources() {
     const {user} = useSession();
@@ -85,31 +86,25 @@ export default function AdminResources() {
         }
     }, []);
 
-    const loadCollections = useCallback(async () => {
-        try {
-            const res = await get('/collections');
-            const cols = Array.isArray(res.response.data) ? res.response.data as Col[] : [];
-            const opts: { id: string; name: string }[] = [];
+    const { collections: hookCollections } = useCollections();
 
-            function flatten(list: Col[], depth = 0) {
-                list.forEach((c: Col) => {
-                    opts.push({id: c._id, name: `${'\u2014 '.repeat(depth)}${c.name}`});
-                    if (c.children && c.children.length) flatten(c.children, depth + 1);
-                });
-            }
-
-            flatten(cols);
-            setCollectionOptions(opts);
-        } catch (err) {
-            console.error('Error cargando colecciones', err);
+    useEffect(() => {
+        const opts: { id: string; name: string }[] = [];
+        function flatten(list: Col[], depth = 0) {
+            list.forEach((c: Col) => {
+                opts.push({id: c._id, name: `${'\u2014 '.repeat(depth)}${c.name}`});
+                if (c.children && c.children.length) flatten(c.children, depth + 1);
+            });
         }
-    }, []);
+        if (Array.isArray(hookCollections) && hookCollections.length) flatten(hookCollections as Col[]);
+        setCollectionOptions(opts);
+    }, [hookCollections]);
 
     useEffect(() => {
         if (!user) return;
         if (user.level < 1) return;
-        loadCollections();
-    }, [user, loadCollections]);
+        // collectionOptions se construye desde hookCollections en el useEffect anterior
+    }, [user]);
 
     useEffect(() => {
         if (!user) return;
