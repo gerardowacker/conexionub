@@ -3,7 +3,8 @@
 import React, {createContext, useContext, useEffect, useState, ReactNode} from "react";
 import {post} from "@/utils/request";
 
-type User = {
+export type User = {
+    _id?: string;
     email: string;
     displayName: string;
     subscriptions?: string[];
@@ -16,6 +17,7 @@ type SessionContextType = {
     login: (email: string, password: string) => Promise<User>;
     logout: (single?: boolean) => Promise<void>;
     localLogout: () => void;
+    setSession: (session: { token: string; clientToken: string }, user: User) => void;
 };
 
 export const SessionContext = createContext<SessionContextType | undefined>(undefined);
@@ -48,6 +50,13 @@ export function SessionProvider({children}: { children: ReactNode }) {
     const saveSession = (token: string, clientToken: string) => {
         localStorage.setItem("__lorest", token);
         localStorage.setItem("__lore_client", clientToken);
+    };
+
+    const setSession = (session: { token: string; clientToken: string }, user: User) => {
+        setToken(session.token);
+        setClientToken(session.clientToken);
+        setUser(user);
+        saveSession(session.token, session.clientToken);
     };
 
     const login = async (email: string, password: string): Promise<User> => {
@@ -91,7 +100,7 @@ export function SessionProvider({children}: { children: ReactNode }) {
     };
 
     return (
-        <SessionContext.Provider value={{user, token, clientToken, login, logout, localLogout}}>
+        <SessionContext.Provider value={{user, token, clientToken, login, logout, localLogout, setSession}}>
             {children}
         </SessionContext.Provider>
     );
