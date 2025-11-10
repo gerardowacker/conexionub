@@ -19,7 +19,7 @@ export default function Sidebar() {
             <p className={styles.email}>{user.email}</p>
 
               <div className={styles.buttonGroup}>
-              <Link href="/perfil" className={styles.button}>
+              <Link href="/repositorio/perfil" className={styles.button}>
                 Perfil
               </Link>
               {user.level >= 1 && (
