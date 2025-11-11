@@ -43,7 +43,7 @@ function flatten(collections: Collection[], depth = 0, out: { id: string; name: 
 
 export default function CollectionAdminSelector({value, onChangeAction, showControls = true, externalCollections}: Props) {
     const [collections, setCollections] = useState<Collection[]>([]);
-    const [loading, setLoading] = useState(false);
+    const [loading] = useState(false);
     const [selected, setSelected] = useState<string | null>(value ?? null);
     const skipNotifyRef = useRef(false);
 
@@ -62,30 +62,22 @@ export default function CollectionAdminSelector({value, onChangeAction, showCont
     const [editing, setEditing] = useState<Collection | null>(null);
     const [form, setForm] = useState({name: '', description: '', licence: '', parent: ''});
     const {token, clientToken} = useSession();
-
-    async function load() {
-        // Si usamos useCollections, no necesitamos ejecutar get aquí. La función de reload() del hook
-        // se encargará de refrescar la caché.
-        return;
-    }
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [deleting, setDeleting] = useState(false);
 
     const { collections: hookCollections, reload: reloadCollections } = useCollections();
 
     useEffect(() => {
-        // Si recibimos las colecciones desde afuera (p. ej. la página), úsalas y no hagas la petición
         if (typeof externalCollections !== 'undefined') {
-            // externalCollections puede ser un array vacío mientras la página lo carga; igualmente lo usamos para evitar peticiones duplicadas
             setCollections(Array.isArray(externalCollections) ? externalCollections : []);
             return;
         }
 
-        // Si no hay colecciones externas, usar el hook `useCollections` para obtenerlas (el hook internamente hace la petición una sola vez)
         if (Array.isArray(hookCollections) && hookCollections.length) setCollections(hookCollections);
         else setCollections([]);
-    }, [externalCollections]);
+    }, [externalCollections, hookCollections]);
 
     useEffect(() => {
-        // Mantener sincronizado el estado local cuando hookCollections cambie y no se hayan pasado externalCollections
         if (typeof externalCollections === 'undefined') setCollections(hookCollections ?? []);
     }, [hookCollections, externalCollections]);
 
@@ -251,8 +243,64 @@ export default function CollectionAdminSelector({value, onChangeAction, showCont
                             </div>
                         </div>
                         <div className={styles.modalFooter}>
+                            {mode === 'edit' && editing && (
+                                <div style={{marginRight: 'auto'}}>
+                                    <button className={styles.btnSecondary}
+                                            style={{border: 'none', color: 'var(--ub-red)', background: 'transparent'}}
+                                            onClick={() => setShowDeleteConfirm(true)}>
+                                        Eliminar colección
+                                    </button>
+                                </div>
+                            )}
                             <button className={styles.btnSecondary} onClick={() => setMode(null)}>Cancelar</button>
                             <button className={styles.btnPrimary} onClick={submit}>Guardar</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal de confirmación de eliminación */}
+            {showDeleteConfirm && editing && (
+                <div className={styles.confirmBackdrop} role="dialog" aria-modal="true">
+                    <div className={styles.confirmModal} role="dialog" aria-modal="true">
+                        <div className={styles.modalHeader}>
+                            <div>Confirmar eliminación</div>
+                            <button className={styles.closeBtn} aria-label="Cerrar" onClick={() => setShowDeleteConfirm(false)}>×</button>
+                        </div>
+
+                        <div className={styles.modalBody}>
+                            <div style={{padding: 0}}>
+                                <div style={{marginBottom: 8}}>{`¿Querés eliminar la colección "${editing.name}"?`}</div>
+                                {/* aquí podríamos añadir texto extra si hace falta */}
+                            </div>
+                        </div>
+
+                        <div className={styles.modalFooter}>
+                            <button className={styles.btnSecondary} type="button" onClick={() => setShowDeleteConfirm(false)} disabled={deleting}>No</button>
+                            <button className={styles.btnPrimary} type="button" onClick={async () => {
+                                if (!token || !clientToken) {
+                                    notify({message: 'Falta sesión', type: 'error'});
+                                    return;
+                                }
+                                setDeleting(true);
+                                try {
+                                    const payload = {session: {token, clientToken}, id: editing._id};
+                                    const res = await post('/collection/delete', payload);
+                                    if (res && res.response && (res.response.status === 200 || res.response.status === 204)) {
+                                        notify({message: 'Colección eliminada', type: 'info'});
+                                        setMode(null);
+                                        setShowDeleteConfirm(false);
+                                        if (typeof reloadCollections === 'function') await reloadCollections();
+                                    } else {
+                                        notify({message: 'Error: ' + JSON.stringify(res?.response?.data || res?.response?.status), type: 'error'});
+                                    }
+                                } catch (err) {
+                                    console.error(err);
+                                    notify({message: 'Error al eliminar: ' + String(err), type: 'error'});
+                                } finally {
+                                    setDeleting(false);
+                                }
+                            }} disabled={deleting}>{deleting ? 'Eliminando...' : 'Sí'}</button>
                         </div>
                     </div>
                 </div>
