@@ -26,7 +26,7 @@ export default function AdminResources() {
     const [initialLastResource, setInitialLastResource] = useState<string | null>(null);
     const [resourcesLoading, setResourcesLoading] = useState<boolean>(false);
 
-    const formRef = useRef<{ submit?: () => void } | null>(null);
+    const formRef = useRef<{ submit?: () => void; openDeleteConfirm?: () => void } | null>(null);
     const [selected, setSelected] = useState<Resource | null | 'new'>(null);
 
     const loadSeqRef = React.useRef(0);
@@ -86,16 +86,18 @@ export default function AdminResources() {
         }
     }, []);
 
-    const { collections: hookCollections } = useCollections();
+    const {collections: hookCollections} = useCollections();
 
     useEffect(() => {
         const opts: { id: string; name: string }[] = [];
+
         function flatten(list: Col[], depth = 0) {
             list.forEach((c: Col) => {
                 opts.push({id: c._id, name: `${'\u2014 '.repeat(depth)}${c.name}`});
                 if (c.children && c.children.length) flatten(c.children, depth + 1);
             });
         }
+
         if (Array.isArray(hookCollections) && hookCollections.length) flatten(hookCollections as Col[]);
         setCollectionOptions(opts);
     }, [hookCollections]);
@@ -103,7 +105,6 @@ export default function AdminResources() {
     useEffect(() => {
         if (!user) return;
         if (user.level < 1) return;
-        // collectionOptions se construye desde hookCollections en el useEffect anterior
     }, [user]);
 
     useEffect(() => {
@@ -188,6 +189,22 @@ export default function AdminResources() {
                             </div>
 
                             <div className={treeStyles.modalFooter}>
+                                {selected !== 'new' && (
+                                    <div style={{marginRight: 'auto'}}>
+                                        <button className={treeStyles.btnPrimary}
+                                                style={{
+                                                    borderColor: 'rgba(134,28,36,0.18)',
+                                                    color: 'var(--ub-red)',
+                                                    background: 'transparent'
+                                                }}
+                                                onClick={() => {
+                                                    if (formRef.current?.openDeleteConfirm) formRef.current.openDeleteConfirm();
+                                                }}>
+                                            Eliminar recurso
+                                        </button>
+                                    </div>
+                                )}
+
                                 <button className={treeStyles.btnSecondary} onClick={() => setSelected(null)}>Cancelar
                                 </button>
                                 <button className={treeStyles.btnPrimary} onClick={() => {
@@ -198,7 +215,6 @@ export default function AdminResources() {
                         </div>
                     </div>
                 )}
-
             </Container>
         </ToastProvider>
     );

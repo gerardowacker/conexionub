@@ -155,14 +155,17 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
     const [collection, setCollection] = useState<string | null>(initial?.access?.collection || null);
     const [file, setFile] = useState<File | null>(null);
     const [, setLoading] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [deleting, setDeleting] = useState(false);
 
     const [extraFields, setExtraFields] = useState<{ key: string; value: string }[]>([]);
-    const { collections: hookCollections } = useCollections();
+    const {collections: hookCollections} = useCollections();
     const [collectionOptions, setCollectionOptions] = useState<{ id: string; name: string }[]>([]);
 
     useEffect(() => {
         const opts: { id: string; name: string }[] = [];
         type Col = { _id: string; name: string; children?: Col[] };
+
         function flatten(list: Col[], depth = 0) {
             list.forEach((c: Col) => {
                 opts.push({id: c._id, name: `${'- '.repeat(depth)}${c.name}`});
@@ -286,7 +289,7 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
 
     const setField = <K extends keyof Dc>(k: K, v: Dc[K]) => setDc(s => ({...s, [k]: v}));
 
-    useImperativeHandle(ref, () => ({submit}));
+    useImperativeHandle(ref, () => ({submit, openDeleteConfirm: () => setShowConfirm(true)}));
 
     const submit = async () => {
         if (!token || !clientToken) {
@@ -501,6 +504,36 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
 
     const removeExtraField = (idx: number) => setExtraFields(prev => prev.filter((_, i) => i !== idx));
 
+    const confirmDelete = async () => {
+        if (!initial || !initial._id) return;
+        if (!token || !clientToken) {
+            notify({message: 'Falta sesión', type: 'error'});
+            return;
+        }
+        setDeleting(true);
+        try {
+            const body = {session: {token, clientToken}, id: initial._id};
+            const res = await fetch(host + '/resource/delete', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(body)
+            });
+            const data = await res.json().catch(() => ({}));
+            if (res.ok) {
+                notify({message: 'Recurso eliminado', type: 'info'});
+                if (onSavedAction) onSavedAction(null);
+            } else {
+                notify({message: 'Error: ' + JSON.stringify(data), type: 'error'});
+            }
+        } catch (err) {
+            console.error(err);
+            notify({message: 'Error al eliminar: ' + String(err), type: 'error'});
+        } finally {
+            setDeleting(false);
+            setShowConfirm(false);
+        }
+    };
+
     return (
         <div className={treeStyles['dialogForm']}>
             <label>
@@ -536,7 +569,8 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
                         })}
                     </select>
                     {DATE_KEYS.has(f.key) ? (
-                        <input type="date" value={f.value} onChange={e => updateExtraField(idx, {value: e.target.value})} />
+                        <input type="date" value={f.value}
+                               onChange={e => updateExtraField(idx, {value: e.target.value})}/>
                     ) : (
                         <input value={f.value} onChange={e => updateExtraField(idx, {value: e.target.value})}
                                placeholder="Valor"/>
@@ -562,6 +596,28 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
                 Archivo
                 <input type="file" onChange={e => setFile(e.target.files ? e.target.files[0] : null)}/>
             </label>
+
+            {showConfirm && (
+                <div className={treeStyles['confirmBackdrop'] || ''} style={{zIndex: 11000}}>
+                    <div className={treeStyles['confirmModal'] || ''} role="dialog" aria-modal="true">
+                        <div style={{padding: '16px'}}>
+                            <div style={{fontWeight: 700, marginBottom: 12}}>Confirmar eliminación</div>
+                            <div style={{marginBottom: 16}}>
+                                {`¿Querés eliminar el recurso "${extractSpanishTitle(initial?.dc?.title)}"?`}
+                            </div>
+                            <div style={{display: 'flex', justifyContent: 'flex-end', gap: 8}}>
+                                <button className={treeStyles['btnSecondary']} type="button" onClick={() => {
+                                    setShowConfirm(false);
+                                }} disabled={deleting}>No
+                                </button>
+                                <button className={treeStyles['btnPrimary']} type="button" onClick={confirmDelete}
+                                        disabled={deleting}>{deleting ? 'Eliminando...' : 'Sí'}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
         </div>
     );
 });
