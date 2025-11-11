@@ -144,21 +144,24 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
         if (typeof payload === 'string') return payload;
         if (typeof payload === 'number' || typeof payload === 'boolean') return String(payload);
         try {
-            const obj = payload as Record<string, any>;
-            if (obj.message && typeof obj.message === 'string') return obj.message;
-            if (obj.error && typeof obj.error === 'string') return obj.error;
-            if (obj.reason && typeof obj.reason === 'string') return obj.reason;
-            const maybeData = obj.response?.data ?? obj.data ?? obj;
-            if (maybeData) {
-                if (typeof maybeData === 'string') return maybeData;
-                if (maybeData.message && typeof maybeData.message === 'string') return maybeData.message;
-                if (maybeData.error && typeof maybeData.error === 'string') return maybeData.error;
-                if (maybeData.reason && typeof maybeData.reason === 'string') return maybeData.reason;
+            const obj = payload as Record<string, unknown>;
+            if (obj && typeof obj === 'object') {
+                const mCandidate = obj['message'] ?? obj['error'] ?? obj['reason'];
+                if (typeof mCandidate === 'string') return mCandidate;
+                const response = obj['response'];
+                const maybeData = (response && typeof response === 'object' ? (response as Record<string, unknown>)['data'] : undefined) ?? obj['data'] ?? obj;
+                if (maybeData) {
+                    if (typeof maybeData === 'string') return maybeData;
+                    if (typeof (maybeData as Record<string, unknown>)['message'] === 'string') return (maybeData as Record<string, unknown>)['message'] as string;
+                    if (typeof (maybeData as Record<string, unknown>)['error'] === 'string') return (maybeData as Record<string, unknown>)['error'] as string;
+                    if (typeof (maybeData as Record<string, unknown>)['reason'] === 'string') return (maybeData as Record<string, unknown>)['reason'] as string;
+                }
             }
-            const s = JSON.stringify(obj);
+            const s = JSON.stringify(payload);
             if (!s) return 'Error desconocido';
             return s.length > 200 ? s.slice(0, 197) + '...' : s;
-        } catch (e) {
+        } catch (err) {
+            console.error('extractErrorMessage error', err);
             return 'Error desconocido';
         }
     };
@@ -389,6 +392,7 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
         const multiMap = new Map<string, string[]>();
         const singles: { key: string; value: string }[] = [];
         for (const f of extraFields) {
+            if (FIXED_FIELDS.has(f.key)) continue;
             if (MULTI_ALLOWED.has(f.key)) {
                 const arr = multiMap.get(f.key) ?? [];
                 arr.push(f.value);
@@ -400,6 +404,7 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
 
         for (const f of singles) {
             const k = f.key;
+            if (FIXED_FIELDS.has(k)) continue;
             const v = f.value;
             if (!k.startsWith('dc:')) continue;
             const path = k.slice(3).split('.');
@@ -416,6 +421,7 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
 
         for (const [key, values] of multiMap.entries()) {
             if (!key.startsWith('dc:')) continue;
+            if (FIXED_FIELDS.has(key)) continue;
             const path = key.slice(3).split('.');
             let cur: Record<string, unknown> = dcCopy;
             for (let i = 0; i < path.length - 1; i++) {
@@ -503,8 +509,9 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
                 return prev;
             }
             const used = prev.map(p => p.key);
-            const unused = DC_OPTIONS.find(o => !used.includes(o.value));
-            const defaultKey = unused ? unused.value : (DC_OPTIONS.find(o => MULTI_ALLOWED.has(o.value))?.value || DC_OPTIONS[0].value);
+            const unused = DC_OPTIONS.find(o => !used.includes(o.value) && !FIXED_FIELDS.has(o.value));
+            const fallbackMulti = DC_OPTIONS.find(o => MULTI_ALLOWED.has(o.value) && !FIXED_FIELDS.has(o.value));
+            const defaultKey = unused ? unused.value : (fallbackMulti?.value || DC_OPTIONS.find(o => !FIXED_FIELDS.has(o.value))?.value || DC_OPTIONS[0].value);
             return [...prev, {key: defaultKey, value: ''}];
         });
     };
