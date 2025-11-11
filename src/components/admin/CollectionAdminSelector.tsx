@@ -58,6 +58,36 @@ export default function CollectionAdminSelector({value, onChangeAction, showCont
         console.warn('[notify]', opts.type ?? 'info', opts.message);
     };
 
+    const extractErrorMessage = (payload: unknown): string => {
+        if (payload == null) return 'Error desconocido';
+        if (typeof payload === 'string') return payload;
+        if (typeof payload === 'number' || typeof payload === 'boolean') return String(payload);
+        try {
+            const obj = payload as Record<string, unknown>;
+            if (obj && typeof obj === 'object') {
+                const o = obj as Record<string, unknown>;
+                const mCandidate = o['message'] ?? o['error'] ?? o['reason'];
+                if (typeof mCandidate === 'string') return mCandidate;
+
+                const response = o['response'];
+                const maybeData = (response && typeof response === 'object' ? (response as Record<string, unknown>)['data'] : undefined) ?? o['data'] ?? o;
+
+                if (maybeData) {
+                    if (typeof maybeData === 'string') return maybeData;
+                    if (typeof (maybeData as Record<string, unknown>)['message'] === 'string') return (maybeData as Record<string, unknown>)['message'] as string;
+                    if (typeof (maybeData as Record<string, unknown>)['error'] === 'string') return (maybeData as Record<string, unknown>)['error'] as string;
+                    if (typeof (maybeData as Record<string, unknown>)['reason'] === 'string') return (maybeData as Record<string, unknown>)['reason'] as string;
+                }
+            }
+            const s = JSON.stringify(payload);
+            if (!s) return 'Error desconocido';
+            return s.length > 200 ? s.slice(0, 197) + '...' : s;
+        } catch (err) {
+            console.error('extractErrorMessage error', err);
+            return 'Error desconocido';
+        }
+    };
+
     const [mode, setMode] = useState<'create' | 'edit' | null>(null);
     const [editing, setEditing] = useState<Collection | null>(null);
     const [form, setForm] = useState({name: '', description: '', licence: '', parent: ''});
@@ -137,7 +167,7 @@ export default function CollectionAdminSelector({value, onChangeAction, showCont
                 // refrescar caché central
                 if (typeof reloadCollections === 'function') await reloadCollections();
             } else notify({
-                message: 'Error: ' + JSON.stringify(res.response.data || res.response.status),
+                message: extractErrorMessage(res.response.data ?? res.response.status),
                 type: 'error'
             });
         } else if (mode === 'edit' && editing) {
@@ -152,7 +182,7 @@ export default function CollectionAdminSelector({value, onChangeAction, showCont
                 setMode(null);
                 if (typeof reloadCollections === 'function') await reloadCollections();
             } else notify({
-                message: 'Error: ' + JSON.stringify(res.response.data || res.response.status),
+                message: extractErrorMessage(res.response.data ?? res.response.status),
                 type: 'error'
             });
         }
@@ -292,7 +322,7 @@ export default function CollectionAdminSelector({value, onChangeAction, showCont
                                         setShowDeleteConfirm(false);
                                         if (typeof reloadCollections === 'function') await reloadCollections();
                                     } else {
-                                        notify({message: 'Error: ' + JSON.stringify(res?.response?.data || res?.response?.status), type: 'error'});
+                                        notify({message: extractErrorMessage(res?.response?.data ?? res?.response?.status), type: 'error'});
                                     }
                                 } catch (err) {
                                     console.error(err);

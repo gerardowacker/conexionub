@@ -139,6 +139,30 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
         console.warn('[notify]', opts.type ?? 'info', opts.message);
     };
 
+    const extractErrorMessage = (payload: unknown): string => {
+        if (payload == null) return 'Error desconocido';
+        if (typeof payload === 'string') return payload;
+        if (typeof payload === 'number' || typeof payload === 'boolean') return String(payload);
+        try {
+            const obj = payload as Record<string, any>;
+            if (obj.message && typeof obj.message === 'string') return obj.message;
+            if (obj.error && typeof obj.error === 'string') return obj.error;
+            if (obj.reason && typeof obj.reason === 'string') return obj.reason;
+            const maybeData = obj.response?.data ?? obj.data ?? obj;
+            if (maybeData) {
+                if (typeof maybeData === 'string') return maybeData;
+                if (maybeData.message && typeof maybeData.message === 'string') return maybeData.message;
+                if (maybeData.error && typeof maybeData.error === 'string') return maybeData.error;
+                if (maybeData.reason && typeof maybeData.reason === 'string') return maybeData.reason;
+            }
+            const s = JSON.stringify(obj);
+            if (!s) return 'Error desconocido';
+            return s.length > 200 ? s.slice(0, 197) + '...' : s;
+        } catch (e) {
+            return 'Error desconocido';
+        }
+    };
+
     const [dc, setDc] = useState<Dc>({
         title: extractSpanishTitle(initial?.dc?.title),
         creator: initial?.dc?.creator || '',
@@ -435,7 +459,7 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
                     if (res.ok) {
                         notify({message: 'Recurso actualizado', type: 'info'});
                         if (onSavedAction) onSavedAction(data as Record<string, unknown>);
-                    } else notify({message: 'Error: ' + JSON.stringify(data), type: 'error'});
+                    } else notify({message: extractErrorMessage(data), type: 'error'});
                 } else {
                     const body = {session: {token, clientToken}, id: initial._id, metadata};
                     const res = await fetch(host + '/resource/update', {
@@ -447,7 +471,7 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
                     if (res.ok) {
                         notify({message: 'Recurso actualizado', type: 'info'});
                         if (onSavedAction) onSavedAction(data as Record<string, unknown>);
-                    } else notify({message: 'Error: ' + JSON.stringify(data), type: 'error'});
+                    } else notify({message: extractErrorMessage(data), type: 'error'});
                 }
             } else {
                 const fd = new FormData();
@@ -461,7 +485,7 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
                 if (res.ok) {
                     notify({message: 'Recurso creado', type: 'info'});
                     if (onSavedAction) onSavedAction(data as Record<string, unknown>);
-                } else notify({message: 'Error: ' + JSON.stringify(data), type: 'error'});
+                } else notify({message: extractErrorMessage(data), type: 'error'});
             }
         } catch (err) {
             console.error(err);
@@ -526,7 +550,7 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
                 notify({message: 'Recurso eliminado', type: 'info'});
                 if (onSavedAction) onSavedAction(null);
             } else {
-                notify({message: 'Error: ' + JSON.stringify(data), type: 'error'});
+                notify({message: extractErrorMessage(data), type: 'error'});
             }
         } catch (err) {
             console.error(err);
