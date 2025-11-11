@@ -43,7 +43,7 @@ const DC_OPTIONS: { value: string; label: string }[] = [
     {value: 'dc:rights', label: 'Rights / Licencia (dc:rights)'}
 ];
 
-const FIXED_FIELDS = new Set(['dc:title', 'dc:description', 'dc:creator', 'dc:type']);
+const FIXED_FIELDS = new Set(['dc:title', 'dc:description', 'dc:creator', 'dc:type', 'dc:format', 'dc:date.available']);
 
 function extractSpanishTitle(t: unknown): string {
     if (!t) return '';
@@ -193,10 +193,11 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
             rights: initial.dc?.rights || prev.rights,
         }));
         setCollection(initial.access?.collection || null);
+        setFile(null);
 
         if (initial.dc && extraFields.length === 0) {
             const skipKeys = new Set([
-                'dc:title', 'dc:creator', 'dc:description', 'dc:type', 'dc:format', 'dc:subject', 'dc:publisher', 'dc:rights',
+                'dc:title', 'dc:creator', 'dc:description', 'dc:type', 'dc:format', 'dc:date.available', 'dc:subject', 'dc:publisher', 'dc:rights',
             ]);
 
             const foundExtras: { key: string; value: string }[] = [];
@@ -301,6 +302,16 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
             return;
         }
 
+        if (!dc.format || String(dc.format).trim() === '') {
+            notify({message: 'Completá el campo Formato (dc:format)', type: 'warn'});
+            return;
+        }
+
+        if (!dc.date || !dc.date.available || String(dc.date.available).trim() === '') {
+            notify({message: 'Completá el campo Fecha disponible (dc:date.available)', type: 'warn'});
+            return;
+        }
+
         const dcCopy = {...dc} as Record<string, unknown>;
 
         if (dcCopy.date && typeof dcCopy.date === 'object') {
@@ -312,6 +323,9 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
                 } else if (v && typeof v === 'object') {
                     const maybe = (v as Record<string, unknown>).value ?? (v as Record<string, unknown>)['@value'] ?? (v as Record<string, unknown>)['date'] ?? null;
                     if (maybe != null) dateObj[k] = maybe;
+                } else if (typeof v === 'string') {
+                    const iso = inputDateToIso(String(v));
+                    if (iso) dateObj[k] = iso;
                 }
             });
         }
@@ -418,7 +432,7 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
 
                     const res = await fetch(host + '/resource/update', {method: 'POST', body: fd});
                     const data = await res.json();
-                    if (res.status === 200) {
+                    if (res.ok) {
                         notify({message: 'Recurso actualizado', type: 'info'});
                         if (onSavedAction) onSavedAction(data as Record<string, unknown>);
                     } else notify({message: 'Error: ' + JSON.stringify(data), type: 'error'});
@@ -430,7 +444,7 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
                         body: JSON.stringify(body)
                     });
                     const data = await res.json();
-                    if (res.status === 200) {
+                    if (res.ok) {
                         notify({message: 'Recurso actualizado', type: 'info'});
                         if (onSavedAction) onSavedAction(data as Record<string, unknown>);
                     } else notify({message: 'Error: ' + JSON.stringify(data), type: 'error'});
@@ -444,7 +458,7 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
 
                 const res = await fetch(host + '/resource/create', {method: 'POST', body: fd});
                 const data = await res.json();
-                if (res.status === 200) {
+                if (res.ok) {
                     notify({message: 'Recurso creado', type: 'info'});
                     if (onSavedAction) onSavedAction(data as Record<string, unknown>);
                 } else notify({message: 'Error: ' + JSON.stringify(data), type: 'error'});
@@ -486,17 +500,6 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
                 return prev.map((p, i) => i === idx ? {...p, ...changed} : p);
             });
             return;
-        }
-
-        if (Object.prototype.hasOwnProperty.call(changed, 'value')) {
-            const v = changed.value as string | undefined;
-            if (!v || v.trim() === '') {
-                notify({
-                    message: 'El valor del campo no puede estar vacío. Eliminá el campo si no lo necesitás.',
-                    type: 'warn'
-                });
-                return;
-            }
         }
 
         setExtraFields(prev => prev.map((p, i) => i === idx ? {...p, ...changed} : p));
@@ -553,6 +556,17 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
             </label>
 
             <label>
+                Formato (dc:format)
+                <input value={dc.format || ''} onChange={e => setField('format', e.target.value)}/>
+            </label>
+
+            <label>
+                Fecha disponible (dc:date.available)
+                <input type="date" value={toInputDateString(dc.date?.available) ?? ''}
+                       onChange={e => setField('date', {...(dc.date || {}), available: e.target.value})}/>
+            </label>
+
+            <label>
                 Descripción / Resumen (dc:description)
                 <textarea value={dc.description || ''} onChange={e => setField('description', e.target.value)}/>
             </label>
@@ -592,10 +606,12 @@ export default forwardRef(function ResourceForm({initial = null, onSavedAction}:
                 </select>
             </label>
 
-            <label>
-                Archivo
-                <input type="file" onChange={e => setFile(e.target.files ? e.target.files[0] : null)}/>
-            </label>
+            {(!initial || !initial._id) && (
+                <label>
+                    Archivo
+                    <input type="file" onChange={e => setFile(e.target.files ? e.target.files[0] : null)}/>
+                </label>
+            )}
 
             {showConfirm && (
                 <div className={treeStyles['confirmBackdrop'] || ''} style={{zIndex: 11000}}>
