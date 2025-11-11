@@ -1,6 +1,6 @@
 {
   "name": "lore-client",
-  "version": "2025.1101.0",
+  "version": "2025.1111.0",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
