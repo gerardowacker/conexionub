@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import Link from 'next/link'
 import styles from './ResourceCard.module.css'
 import {Resource} from '@/types/resources'
@@ -32,6 +32,23 @@ export default function ResourceCard({resource, onSelectAction}: Props) {
         description = dc.description
     }
 
+    const [needsFallback, setNeedsFallback] = useState(false)
+    useEffect(() => {
+        if (typeof window !== 'undefined' && typeof CSS !== 'undefined' && typeof CSS.supports === 'function') {
+            const supportsClamp = CSS.supports('-webkit-line-clamp', '4') || CSS.supports('line-clamp', '4')
+            setNeedsFallback(!supportsClamp)
+        } else if (typeof window !== 'undefined') {
+            setNeedsFallback(true)
+        } else {
+            setNeedsFallback(true)
+        }
+    }, [])
+
+    const CHAR_FALLBACK = 500
+    const displayedDescription = needsFallback && description.length > CHAR_FALLBACK
+        ? description.slice(0, CHAR_FALLBACK).trimEnd() + '...'
+        : description
+
     if (!title) title = id
     if (!description) description = 'Sin descripción disponible.'
 
@@ -42,13 +59,12 @@ export default function ResourceCard({resource, onSelectAction}: Props) {
         }
     }
 
-    // si se pasa onSelect, no navegamos y disparamos el callback; si no, mantenemos el Link
     if (onSelectAction) {
         return (
             <a className={styles['resource']} onClick={handleClick} href="#">
                 <h2 className={styles['resource-title']}>{title}</h2>
                 <p className={styles['resource-author']}>{author}{year ? `  (${year})` : ''}</p>
-                <p className={styles['resource-description']}>{description}</p>
+                <p className={styles['resource-description']} title={description} aria-label={description}>{displayedDescription}</p>
             </a>
         )
     }
@@ -57,7 +73,7 @@ export default function ResourceCard({resource, onSelectAction}: Props) {
         <Link href={`/repositorio/recurso/${id}`} className={styles['resource']}>
             <h2 className={styles['resource-title']}>{title}</h2>
             <p className={styles['resource-author']}>{author}{year ? `  (${year})` : ''}</p>
-            <p className={styles['resource-description']}>{description}</p>
+            <p className={styles['resource-description']} title={description} aria-label={description}>{displayedDescription}</p>
         </Link>
     )
 }
