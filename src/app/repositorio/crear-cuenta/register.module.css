@@ -1,0 +1,159 @@
+:root {
+    --ub-red: #7a0e12;
+    --ub-red-2: #8f1116;
+    --ub-text: #2d0a0a;
+    --ub-card: #ffffff;
+    --ub-input: #f2f2f2;
+    --ub-border: rgba(0, 0, 0, .08);
+    --ub-shadow: 0 10px 22px rgba(0, 0, 0, .12);
+}
+
+.card {
+    background: var(--ub-card);
+    border: 1px solid var(--ub-border);
+    border-radius: 18px;
+    box-shadow: var(--ub-shadow);
+    padding: 20px;
+    margin: 0 auto;
+    color: var(--ub-text);
+}
+
+.heading {
+    margin: 0 0 10px;
+    font-size: 1.5rem;
+    margin-bottom: 25px;
+    font-weight: 800;
+    color: var(--ub-red);
+}
+
+.form {
+    display: grid;
+    gap: 12px;
+}
+
+.row2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.input {
+    height: 44px;
+    border-radius: 16px;
+    border: 1px solid var(--ub-border);
+    background: var(--ub-input);
+    padding: 0 14px;
+    color: var(--ub-text);
+    outline: none;
+    transition: border-color .15s, box-shadow .15s, background .15s;
+}
+
+.input::placeholder {
+    color: rgba(45, 10, 10, .45);
+}
+
+.input:focus {
+    border-color: rgba(122, 14, 18, .25);
+    box-shadow: 0 0 0 3px rgba(122, 14, 18, .15);
+    background: #fff;
+}
+
+.button {
+    font-family: var(--font-monteserrat);
+    height: 46px;
+    border-radius: 16px;
+    border: none;
+    width: 100%;
+    background: var(--ub-red);
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: #fff;
+    font-weight: 800;
+    letter-spacing: .2px;
+    cursor: pointer;
+    transition: filter .2s, transform .05s, background .2s;
+}
+
+.button:hover {
+    filter: brightness(1.03);
+    background: var(--ub-red-2);
+}
+
+.button:active {
+    transform: translateY(1px);
+}
+
+.button:disabled {
+    opacity: .7;
+    cursor: default;
+}
+
+.help {
+    margin-top: 6px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+.link {
+    color: var(--ub-red);
+    text-decoration: none;
+    font-weight: 700;
+    position: relative;
+    padding-bottom: 2px;
+}
+
+.link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 0;
+    height: 2px;
+    background: currentColor;
+    transition: width .2s ease;
+}
+
+.link:hover::after {
+    width: 100%;
+}
+
+.error, .ok {
+    padding: 10px 12px;
+    border-radius: 12px;
+    font-size: .92rem;
+    line-height: 1.2rem;
+}
+
+.error {
+    background: rgba(255, 86, 86, .10);
+    border: 1px solid rgba(255, 86, 86, .35);
+    color: #8b1b1b;
+    margin-bottom: 12px;
+}
+
+.ok {
+    background: rgba(106, 193, 115, 0.12);
+    border: 1px solid rgba(106, 193, 115, 0.35);
+    color: #1d6a2e;
+}
+
+.breadcrumbInactive {
+    color: rgba(58, 0, 0, .6);
+    text-decoration: none;
+}
+
+.breadcrumbActive {
+    color: var(--ub-red);
+    font-weight: 600;
+}
+
+@media (max-width: 640px) {
+    .row2 {
+        grid-template-columns: 1fr;
+    }
+
+    .card {
+        padding: 16px;
+    }
+}

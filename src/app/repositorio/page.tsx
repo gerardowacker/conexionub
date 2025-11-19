@@ -1,34 +1,37 @@
 import React from "react";
-import Banner from "@/components/banner/Banner";
-import PillMenu from "@/components/menu/pillmenu/PillMenu";
+import Container from "@/components/container/Container";
+import Link from "next/link";
+import {get} from "@/utils/request";
+import styles from './page.module.css'
+import {Resource} from '@/types/resources'
+import ResourceList from '@/components/list/ResourceList'
 
-import bannerStyles from "@/components/banner/Banner.module.css";
+export default async function Repositorio() {
+    const request = await get('/resources?pageSize=5&desc=true')
+    const resources = Array.isArray(request.response.data?.resources) ? request.response.data.resources as Resource[] : [];
+    const hasMore = !!request.response.data?.hasMore;
+    const lastResource = request.response.data?.lastResource ?? null;
 
-export default function Repositorio() {
     return (
         <>
-            <Banner>
-                <h1 id="hero-title" className={bannerStyles["hero-title"]}>
-                    Repositorio
-                </h1>
-                <h3 className={bannerStyles['hero-sub']}>Tesis y Trabajos de Investigación de la Facultad de Ingeniería y
-                    Tecnología Informática</h3>
-            </Banner>
-            <PillMenu items={[
-                {
-                    name: 'Inicio',
-                    route: '',
-                    selected: true
-                },
-                {
-                    name: 'Colecciones',
-                    route: 'colecciones'
-                },
-                {
-                    name: 'Buscar',
-                    route: 'buscar'
-                }
-            ]}/>
+            <Container id={'ultimas'} crumb={['Repositorio',
+                <Link key={'Últimas adiciones'} href={'#ultimas'}>Últimas adiciones</Link>]}>
+                <h1 className={styles['title']}>Últimas adiciones</h1>
+
+                <ResourceList
+                    initialResources={resources}
+                    initialHasMore={hasMore}
+                    initialLastResource={lastResource}
+                    baseEndpoint={'/resources'}
+                    initialQuery={'?pageSize=5&desc=true'}
+                />
+
+                {hasMore && (
+                    <Link href={'/repositorio'} className={styles['see-more']}>
+                        Ver más
+                    </Link>
+                )}
+            </Container>
         </>
     )
 }

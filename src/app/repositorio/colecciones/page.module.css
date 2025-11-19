@@ -1,0 +1,61 @@
+.title {
+    margin-top: 0;
+}
+
+.collections {
+    margin: 0 0;
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: 0 2px 8px rgba(134, 28, 36, 0.08);
+    padding: 1rem;
+    list-style: none;
+}
+
+.collection {
+    display: block;
+    color: var(--ub-red);
+    font-size: 1.15rem;
+    font-weight: 600;
+    padding: 0.75rem 1rem;
+    border-radius: calc(var(--radius) / 2);
+    margin-bottom: 0.3rem;
+    transition: background .2s, color .2s;
+    text-decoration: none;
+}
+
+.collection:hover {
+    background: var(--bg-darker);
+    color: var(--ring);
+}
+
+.collections li:last-child .collection {
+    margin-bottom: 0;
+}
+
+.collection-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.toggle-btn {
+    background: none;
+    border: none;
+    color: var(--ub-red, #861c24);
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 0 0.25rem;
+    margin-right: 0.25rem;
+    line-height: 1;
+    transition: color .2s;
+}
+
+.toggle-btn:focus {
+    outline: 2px solid var(--ub-red, #861c24);
+}
+
+/* Opcional: para mejorar la indentación visual de los hijos */
+.collections ul {
+    margin-left: 1.5rem;
+    margin-top: 0.3rem;
+}

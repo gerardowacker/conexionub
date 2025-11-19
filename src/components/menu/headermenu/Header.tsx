@@ -53,7 +53,7 @@ export default function Header() {
                 Carreras
               </Link>
               <Link href="/repositorio" onClick={closeMenu}>
-                Repositorio
+                Repositorio FITI
               </Link>
               <Link href="/contacto" onClick={closeMenu}>
                 Contacto

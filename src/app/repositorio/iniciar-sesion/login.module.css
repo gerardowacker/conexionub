@@ -1,0 +1,101 @@
+:root{
+  --ub-card: #ffffff;
+  --ub-input: #f2f2f2;
+  --ub-border: rgba(0,0,0,.08);
+  --ub-shadow: 0 10px 22px rgba(0,0,0,.12);
+  --ub-text: #2d0a0a;
+  --ub-muted: rgba(45,10,10,.75);
+  --ub-primary: #7a0e12;   
+  --ub-primary-2: #8f1116;
+}
+
+.card{
+  background: var(--ub-card);
+  border: 1px solid var(--ub-border);
+  border-radius: 18px;
+  box-shadow: var(--ub-shadow);
+  padding: 20px;
+  margin: 0 auto;
+  color: var(--ub-text);
+}
+
+.heading{
+  margin: 0 0 10px;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--ub-primary);
+}
+
+.form{ display: grid; gap: 12px; }
+
+.row2{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.input{
+  height: 44px;
+  border-radius: 16px;
+  border: 1px solid var(--ub-border);
+  background: var(--ub-input);
+  padding: 0 14px;
+  color: var(--ub-text);
+  outline: none;
+  transition: box-shadow .15s ease, border-color .15s ease, background .15s ease;
+}
+.input::placeholder{ color: rgba(45,10,10,.45); }
+.input:focus{
+  border-color: rgba(122,14,18,.25);
+  box-shadow: 0 0 0 3px rgba(122,14,18,.15);
+  background: #fff;
+}
+
+.button{
+  margin-top: 6px;
+  height: 46px;
+  border-radius: 16px;
+  border: none;
+  width: 100%;
+  background: var(--ub-primary);
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: .2px;
+  cursor: pointer;
+  transition: filter .2s ease, transform .05s ease, background .2s ease;
+}
+.button:hover{ filter: brightness(1.03); background: var(--ub-primary-2); }
+.button:active{ transform: translateY(1px); }
+.button:disabled{ opacity: .7; cursor: default; }
+
+.help{
+  margin-top: 6px;
+  display: flex;
+  justify-content: flex-end;
+}
+.link{
+  color: var(--ub-primary);
+  text-decoration: none;
+  position: relative;
+  padding-bottom: 2px;
+  font-weight: 600;
+}
+.link::after{
+  content:""; position:absolute; left:0; bottom:-2px; height:2px; width:0;
+  background: currentColor; transition: width .2s ease;
+}
+.link:hover::after{ width:100%; }
+
+.error{
+  background: rgba(255,86,86,.10);
+  border: 1px solid rgba(255,86,86,.35);
+  color: #8b1b1b;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: .92rem;
+}
+
+@media (max-width: 600px){
+  .row2{ grid-template-columns: 1fr; }
+  .card{ padding: 16px; }
+}

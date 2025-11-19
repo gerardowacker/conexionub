@@ -1,0 +1,122 @@
+.title {
+    margin-top: 0;
+}
+
+.infoGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.infoItem {
+    background: white;
+    padding: 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(0,0,0,0.06);
+}
+
+.label {
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.value {
+    font-weight: 500;
+}
+
+.section {
+    margin-top: 18px;
+    background: white;
+    padding: 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(0,0,0,0.06);
+}
+
+.sectionTitle {
+    margin-bottom: 12px;
+}
+
+.addRow {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.btnPrimary {
+    background: var(--ub-red);
+    color: var(--text);
+    border: none;
+    padding: 10px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.subscriptionsList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.subscriptionItem {
+    background: white;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(0,0,0,0.06);
+    transition: background .15s ease, transform .08s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.subName {
+    font-weight: 600;
+    color: #000;
+}
+
+.subName:hover {
+    color: var(--ub-red);
+}
+
+.subRemove {
+    background: transparent;
+    border: none;
+    color: var(--ub-red);
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 1;
+    padding: 6px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.subRemove:hover {
+    background: rgba(134,28,36,0.08);
+}
+
+.subRemove:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.muted {
+    color: var(--muted);
+}
+
+.empty {
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    border: 1px solid rgba(0,0,0,0.06);
+}
+
+.admin-link {
+    color: var(--ub-red);
+    text-decoration: underline;
+}
+

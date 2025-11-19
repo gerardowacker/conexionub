@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import {Barlow} from "next/font/google";
+import {Barlow, Montserrat} from "next/font/google";
 import "./globals.css";
 import Header from "@/components/menu/headermenu/Header";
 import Footer from "@/components/footer/Footer";
@@ -7,6 +7,12 @@ import Footer from "@/components/footer/Footer";
 const barlowSans = Barlow({
     weight: ['400', '500', '600', '700'],
     variable: '--font-barlow',
+    subsets: ["latin"]
+})
+
+const montserrat = Montserrat({
+    weight: ['400', '500', '600', '800'],
+    variable: '--font-montserrat',
     subsets: ["latin"]
 })
 
