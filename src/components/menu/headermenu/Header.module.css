@@ -5,74 +5,150 @@
 
 .ub-landing-inner {
     max-width: 1200px;
-    font-family: 'Barlow', Arial, sans-serif;
     margin: 0 auto;
-    display: flex;
+    padding: 10px 16px ;
+    font-family: 'Barlow', Arial, sans-serif;
 }
 
 .ub-landing-nav {
-    padding: 30px 30px 30px 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-}
-
-.leftLinks {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-    flex: 1;
-}
-
-.rightLinks {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-    margin-left: auto;
-}
-
-.ub-landing-nav .header-logo {
-    height: 40px;
-    padding-right: 10px;
-}
-
-.ub-landing-nav a {
     display: flex;
     flex-direction: column;
-    align-self: center;
-    color: var(--ub-red);
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 1.2rem;
-    transition: .2s;
+    gap: 12px;
 }
 
-.ub-landing-nav a:hover {
-    opacity: .5;
+.brandRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logoLink {
+    display: flex;
+    align-items: center;
+}
+
+.header-logo {
+    height: 40px;
+}
+
+.burger {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    background: transparent;
     cursor: pointer;
 }
 
-.ub-landing-actions .login-btn {
-    color: #fff;
-    text-decoration: none;
-    font-weight: 600;
-    padding: 6px 14px;
-    border-radius: 20px;
-    transition: .2s, border-color .2s;
+.burgerLine {
+    width: 18px;
+    height: 2px;
+    background-color: var(--ub-red);
+    border-radius: 999px;
 }
 
-.ub-landing-actions .login-btn:hover {
-    background: #fff;
-    color: var(--ub-red-dark);
-    border-color: #fff;
+.linksRow {
+    display: none; 
+    flex-direction: column;
+    gap: 12px;
+    padding-top: 8px;
+}
+
+.linksRowOpen {
+    display: flex;
+    border-radius: 12px;
+    padding: 8px 10px;
+    margin: 10px -16px 0;
+}
+
+.leftLinks,
+.rightLinks {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+.ub-landing-nav a {
+    display: inline-flex;
+    align-items: center;
+    color: var(--ub-red);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    transition: 0.2s;
+}
+
+.ub-landing-nav a:hover {
+    opacity: 0.5;
+    cursor: pointer;
 }
 
 .separator {
-  display: inline-block;
-  width: 1px;
-  height: 24px;
-  background: #ccc;
-  margin: 0 12px;
-  vertical-align: middle;
+    display: inline-block;
+    width: 1px;
+    height: 24px;
+    background: #ccc;
+    margin: 0 12px;
+    vertical-align: middle;
+}
+
+@media (min-width: 768px) {
+    .ub-landing-inner {
+        padding: 24px 24px 0;
+    }
+
+    .ub-landing-nav {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0;
+    }
+
+    .brandRow {
+        margin-right: 24px;
+    }
+
+    .burger {
+        display: none;
+    }
+
+    .linksRow {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding-top: 0;
+        gap: 0;
+        background: transparent;
+    }
+
+    .leftLinks {
+        flex: 1;
+        flex-direction: row;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .rightLinks {
+        flex-direction: row;
+        align-items: center;
+        gap: 20px;
+        margin-left: auto;
+    }
+
+    .ub-landing-nav a {
+        font-size: 1.05rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .ub-landing-inner {
+        padding: 24px 0 0;
+    }
 }

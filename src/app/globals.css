@@ -6,15 +6,11 @@
     --bg-darker: #ead7d6;
     --ring: #6e161d;
     --radius: 16px;
+}
 
-    --toast-info-bg: var(--muted);
-    --toast-info-color: #ffffff;
-
-    --toast-error-bg: var(--ub-red, #861c24);
-    --toast-error-color: var(--text, #fff);
-
-    --toast-warn-color: var(--text, #fff);
-    --toast-warn-bg: #6b3f2b;
+::before,
+::after {
+    box-sizing: border-box;
 }
 
 html, body {
@@ -55,8 +51,29 @@ body {
     background: linear-gradient(to bottom, #ead7d6, #eddddd 400px);
 }
 
+main.landing {
+    flex: 1;
+    padding: 0;
+}
+
 .landing .view-container {
     max-width: 1200px;
     margin: 0 auto 64px;
     padding: 0;
+}
+
+@media (min-width: 768px) {
+    main.landing {
+        padding: 24px 32px;
+    }
+}
+
+@media (min-width: 1024px) {
+    main.landing {
+        padding: 32px 0;
+    }
+
+    .landing .view-container {
+        padding: 0 24px;  
+    }
 }
