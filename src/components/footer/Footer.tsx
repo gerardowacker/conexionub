@@ -54,7 +54,7 @@ export default async function Footer() {
                         <ul className={styles.list}>
                             <li><Link href="/carreras/ingenieria-informatica">Ing. Informática</Link></li>
                             <li><Link href="/carreras/farmacia">Farmacia</Link></li>
-                            <li><Link href="/carreras/progrmacion-computadoras">Prog. de computadoras</Link></li>
+                            <li><Link href="/carreras/progrmacion-en-computadoras">Prog. de computadoras</Link></li>
                         </ul>
                     </div>
                     <div className={styles.col}>
@@ -64,7 +64,7 @@ export default async function Footer() {
                         <ul className={styles.list}>
                             <li><Link href="/carreras/ciencias-biologicas">Cs. biológicas</Link></li>
                             <li><Link href="/carreras/nutricion">Nutrición</Link></li>
-                            <li><Link href="/carreras/diseño-animacion">Dis. y animación digital</Link></li>
+                            <li><Link href="/carreras/diseno-animacion-digital">Dis. y animación digital</Link></li>
                         </ul>
                     </div>
                     <div className={styles.col}>
