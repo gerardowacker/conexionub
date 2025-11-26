@@ -1,0 +1,147 @@
+.credits-wrapper {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+}
+
+.credits-main,
+.credits-side {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 32px 32px 28px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+}
+
+.credits-title {
+    font-size: 1.6rem;
+    margin: 0 0 20px;
+    color: #8c1b2b;
+}
+
+/* Lista del equipo */
+.credits-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.credits-item {
+    padding: 8px 0;
+}
+
+.credits-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+.credits-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.credits-name {
+    font-weight: 700;
+    color: #8c1b2b;
+    margin-bottom: 2px;
+}
+
+.credits-role {
+    font-size: 0.95rem;
+    color: #555555;
+}
+
+.credits-icons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.credits-icons a {
+    font-size: 1.25rem;
+    color: #8c1b2b;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.credits-icons a:hover {
+    transform: translateY(-1px);
+    opacity: 0.85;
+}
+
+.project-info {
+    margin-top: 32px;
+    border-top: 1px solid #f0e4e4;
+    padding-top: 20px;
+}
+
+.project-title {
+    font-size: 1.2rem;
+    margin: 0 0 10px;
+    color: #8c1b2b;
+}
+
+.project-text {
+    margin: 0 0 10px;
+    font-size: 0.95rem;
+    color: #444;
+}
+
+.project-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.project-links li {
+    margin-bottom: 6px;
+}
+
+.project-links a {
+    text-decoration: underline;
+    color: #8c1b2b;
+}
+
+.project-links a:hover {
+    opacity: 0.85;
+}
+
+
+@media (max-width: 900px) {
+    .credits-wrapper {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .credits-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .credits-icons {
+        margin-top: 4px;
+    }
+
+    .project-info {
+        margin-top: 24px;
+        padding-top: 16px;
+    }
+
+    .project-title {
+        font-size: 1.05rem;
+    }
+
+    .project-text,
+    .project-links {
+        font-size: 0.9rem;
+    }
+
+    .project-links li {
+        word-break: break-word;
+    }
+}
