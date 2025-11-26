@@ -54,7 +54,7 @@ export default async function Footer() {
                         <ul className={styles.list}>
                             <li><Link href="/carreras/ingenieria-informatica">Ing. Informática</Link></li>
                             <li><Link href="/carreras/farmacia">Farmacia</Link></li>
-                            <li><Link href="/carreras/progrmacion-en-computadoras">Prog. de computadoras</Link></li>
+                            <li><Link href="/carreras/programacion-en-computadoras">Prog. de computadoras</Link></li>
                         </ul>
                     </div>
                     <div className={styles.col}>
