@@ -3,7 +3,7 @@ import Link from "next/link";
 import Banner from "@/components/banner/Banner";
 import Container from "@/components/container/Container";
 
-import { FaLinkedin, FaGithub, FaEnvelope } from "react-icons/fa";
+import {FaLinkedin, FaGithub, FaEnvelope} from "react-icons/fa";
 
 import styles from "./page.module.css";
 import bannerStyles from "@/components/banner/Banner.module.css";
@@ -15,9 +15,6 @@ export default function Creditos() {
                 <h1 id="hero-title" className={bannerStyles["hero-title"]}>
                     Créditos
                 </h1>
-                <h3 className={bannerStyles["hero-sub"]}>
-                    Conocé a las personas detrás de este proyecto
-                </h3>
             </Banner>
 
             <Container
@@ -42,7 +39,7 @@ export default function Creditos() {
                                         Gerardo Wacker
                                     </span>
                                     <span className={styles["credits-role"]}>
-                                        Desarrollador Frontend
+                                        Project lead, desarrollo y despliegue
                                     </span>
                                 </div>
 
@@ -53,7 +50,7 @@ export default function Creditos() {
                                         rel="noopener noreferrer"
                                         aria-label="LinkedIn"
                                     >
-                                        <FaLinkedin />
+                                        <FaLinkedin/>
                                     </a>
                                     <a
                                         href="https://github.com/gerardowacker"
@@ -61,13 +58,13 @@ export default function Creditos() {
                                         rel="noopener noreferrer"
                                         aria-label="GitHub"
                                     >
-                                        <FaGithub />
+                                        <FaGithub/>
                                     </a>
                                     <a
                                         href="mailto:gerardo@wacker.com.ar"
                                         aria-label="Email"
                                     >
-                                        <FaEnvelope />
+                                        <FaEnvelope/>
                                     </a>
                                 </div>
                             </div>
@@ -79,7 +76,7 @@ export default function Creditos() {
                                         Chiara Brunella Tanzi
                                     </span>
                                     <span className={styles["credits-role"]}>
-                                        Desarrollador Frontend
+                                        Diseño y desarrollo frontend
                                     </span>
                                 </div>
 
@@ -90,7 +87,7 @@ export default function Creditos() {
                                         rel="noopener noreferrer"
                                         aria-label="LinkedIn"
                                     >
-                                        <FaLinkedin />
+                                        <FaLinkedin/>
                                     </a>
                                     <a
                                         href="https://github.com/TheLampT"
@@ -98,13 +95,13 @@ export default function Creditos() {
                                         rel="noopener noreferrer"
                                         aria-label="GitHub"
                                     >
-                                        <FaGithub />
+                                        <FaGithub/>
                                     </a>
                                     <a
                                         href="mailto:tanzichia@yahoo.com.ar"
                                         aria-label="Email"
                                     >
-                                        <FaEnvelope />
+                                        <FaEnvelope/>
                                     </a>
                                 </div>
                             </div>
@@ -116,7 +113,7 @@ export default function Creditos() {
                                         Joaquin Tiviroli
                                     </span>
                                     <span className={styles["credits-role"]}>
-                                        Desarrollador Frontend
+                                        Diseño de contenido y testing
                                     </span>
                                 </div>
 
@@ -127,35 +124,65 @@ export default function Creditos() {
                                         rel="noopener noreferrer"
                                         aria-label="GitHub"
                                     >
-                                        <FaGithub />
+                                        <FaGithub/>
                                     </a>
                                     <a
                                         href="mailto:joaquintiviroli@gmail.com"
                                         aria-label="Email"
                                     >
-                                        <FaEnvelope />
+                                        <FaEnvelope/>
                                     </a>
                                 </div>
                             </div>
                         </li>
                     </ul>
                     <section className={styles["project-info"]}>
-                        <h3 className={styles["project-title"]}>Sobre el proyecto</h3>
+                        <h3 className={styles["project-title"]}>Créditos y licencias del proyecto</h3>
                         <p className={styles["project-text"]}>
-                            Este sitio fue desarrollado como parte de un proyecto académico
-                            de la facultad. El código fuente se encuentra disponible en el 
-                            siguiente repositorio:
+                            El presente sitio fue desarrollado dentro del marco de un proyecto
+                            de la Universidad. El contenido y logotipos mostrados son propiedad
+                            de la Fundación Universidad de Belgrano Dr. Avelino Porto, y es utilizado
+                            con permiso previo.
+                        </p>
+
+                        <p className={styles["project-text"]}>
+                            Los datos de los recursos y colecciones son propiedad de sus respectivos autores
+                            y la Universidad de Belgrano.
+                        </p>
+
+                        <p className={styles["project-text"]}>
+                            El Portal de Ciencias y Tecnologías se encuentra protegido bajo la licencia
+                            GNU Affero General Public Licence 3.0.
+                        </p>
+                        <p className={styles["project-text"]}>
+                            La arquitectura de repositorio LORE y todos sus artefactos son desarrollados
+                            por Gerardo Wacker. Su código fuente se encuentra protegido bajo la licencia
+                            GNU General Public Licence 3.0.
+                        </p>
+
+                        <p className={styles["project-text"]}>
+                            Se puede acceder a los códigos fuente a través de los siguientes enlaces:
                         </p>
 
                         <ul className={styles["project-links"]}>
                             <li>
-                                Frontend y Backend:&nbsp;
+                                Portal de Ciencias y Tecnologías ConexionUB: &nbsp;
                                 <a
                                     href="https://github.com/gerardowacker/conexionub"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >
                                     https://github.com/gerardowacker/conexionub
+                                </a>
+                            </li>
+                            <li>
+                                Repositorio LORE: &nbsp;
+                                <a
+                                    href="https://github.com/gerardowacker/lore"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    https://github.com/gerardowacker/lore
                                 </a>
                             </li>
                         </ul>
