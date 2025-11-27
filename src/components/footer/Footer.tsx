@@ -1,7 +1,8 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import {Facebook, Twitter, Instagram, Linkedin, Youtube} from "lucide-react"
+
+import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaYoutube } from "react-icons/fa";
 import styles from "./Footer.module.css";
 import {getDeploymentInfo} from "@/app/vercel";
 
@@ -26,24 +27,24 @@ export default async function Footer() {
                     <div className={styles.socialIcons}>
                         <a href="https://www.facebook.com/universidaddebelgrano" target="_blank"
                            rel="noopener noreferrer" aria-label="Facebook" className={styles.socialLink}>
-                            <Facebook className={styles.socialIcon}/>
+                            <FaFacebook className={styles.socialIcon}/>
                         </a>
                         <a href="https://www.instagram.com/universidadbelgrano" target="_blank"
                            rel="noopener noreferrer" aria-label="Instagram" className={styles.socialLink}>
-                            <Instagram className={styles.socialIcon}/>
+                            <FaInstagram className={styles.socialIcon}/>
                         </a>
                         <Link href="https://x.com/ubeduar?lang=es" target="_blank" rel="noopener noreferrer"
                               aria-label="X (Twitter)">
-                            <Twitter className={styles.socialIcon}/>
+                            <FaTwitter className={styles.socialIcon}/>
                         </Link>
                         <a href="https://www.linkedin.com/school/universidad-de-belgrano/posts/?feedView=all"
                            target="_blank" rel="noopener noreferrer" aria-label="Linkedin"
                            className={styles.socialLink}>
-                            <Linkedin className={styles.socialIcon}/>
+                            <FaLinkedin className={styles.socialIcon}/>
                         </a>
                         <a href="https://www.youtube.com/user/UniversidadBelgrano" target="_blank"
                            rel="noopener noreferrer" aria-label="Youtube" className={styles.socialLink}>
-                            <Youtube className={styles.socialIcon}/>
+                            <FaYoutube className={styles.socialIcon}/>
                         </a>
                     </div>
                 </div>
