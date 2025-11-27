@@ -1,6 +1,6 @@
 'use client';
 
-import {ChevronDown, ChevronRight} from "lucide-react";
+import {FaChevronDown, FaChevronRight} from "react-icons/fa";
 
 import {useState} from "react";
 import styles from "./CollectionTree.module.css";
@@ -84,7 +84,7 @@ function CollectionItem({collection, selectable = false, onSelect, selectedId}: 
                         aria-label={open ? 'Colapsar' : 'Expandir'}
                         onClick={() => setOpen(o => !o)}
                     >
-                        {open ? <ChevronDown size={16}/> : <ChevronRight size={16}/>}
+                        {open ? <FaChevronDown size={16}/> : <FaChevronRight size={16}/>}
                     </button>
                 ) : <div className={styles['toggle-btn']}/>}
                 {selectable ? (
